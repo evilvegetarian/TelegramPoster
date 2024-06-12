@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34902.65
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramPoster.Persistence", "TelegramPoster.Persistence\TelegramPoster.Persistence.csproj", "{0F3662AA-9EE3-4680-86AE-0D021DCA4690}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utility", "Utility\Utility.csproj", "{86F50DFC-D87B-4D92-9441-57888F00D38C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramPoster.Domain", "TelegramPoster.Domain\TelegramPoster.Domain.csproj", "{3CEB1132-C8A9-40B9-9171-38B23BA698AD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramPoster.Auth", "TelegramPoster.Auth\TelegramPoster.Auth.csproj", "{C41434D8-E7DD-4FFE-AE25-B5E30EF8AC0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramPoster.Api", "TelegramPoster.Api\TelegramPoster.Api.csproj", "{883BE3E0-34B0-4F60-831D-265EA0C9A44A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramPoster.Application", "TelegramPoster.Application\TelegramPoster.Application.csproj", "{2AA77906-BCAF-4B08-A7D4-12F521BBD103}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramPoster.Background", "TelegramPoster.Background\TelegramPoster.Background.csproj", "{E128920A-1805-43C8-B72C-1DB278DC5C96}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0F3662AA-9EE3-4680-86AE-0D021DCA4690}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F3662AA-9EE3-4680-86AE-0D021DCA4690}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F3662AA-9EE3-4680-86AE-0D021DCA4690}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F3662AA-9EE3-4680-86AE-0D021DCA4690}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86F50DFC-D87B-4D92-9441-57888F00D38C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86F50DFC-D87B-4D92-9441-57888F00D38C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86F50DFC-D87B-4D92-9441-57888F00D38C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86F50DFC-D87B-4D92-9441-57888F00D38C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CEB1132-C8A9-40B9-9171-38B23BA698AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CEB1132-C8A9-40B9-9171-38B23BA698AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CEB1132-C8A9-40B9-9171-38B23BA698AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CEB1132-C8A9-40B9-9171-38B23BA698AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C41434D8-E7DD-4FFE-AE25-B5E30EF8AC0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C41434D8-E7DD-4FFE-AE25-B5E30EF8AC0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C41434D8-E7DD-4FFE-AE25-B5E30EF8AC0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C41434D8-E7DD-4FFE-AE25-B5E30EF8AC0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{883BE3E0-34B0-4F60-831D-265EA0C9A44A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{883BE3E0-34B0-4F60-831D-265EA0C9A44A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{883BE3E0-34B0-4F60-831D-265EA0C9A44A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{883BE3E0-34B0-4F60-831D-265EA0C9A44A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AA77906-BCAF-4B08-A7D4-12F521BBD103}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AA77906-BCAF-4B08-A7D4-12F521BBD103}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AA77906-BCAF-4B08-A7D4-12F521BBD103}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AA77906-BCAF-4B08-A7D4-12F521BBD103}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E128920A-1805-43C8-B72C-1DB278DC5C96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E128920A-1805-43C8-B72C-1DB278DC5C96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E128920A-1805-43C8-B72C-1DB278DC5C96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E128920A-1805-43C8-B72C-1DB278DC5C96}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9D0E981C-99B0-4717-8383-3DBECEB70C6E}
+	EndGlobalSection
+EndGlobal
