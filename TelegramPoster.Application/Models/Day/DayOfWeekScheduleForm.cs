@@ -33,7 +33,5 @@ public class DayOfWeekScheduleIntervalForm
     public required TimeOnly EndPosting { get; set; }
 
     [Required]
-    [MinLength(0)]
-    [MaxLength(1440)]
-    public required uint Interval { get; set; }
+    public required byte Interval { get; set; }
 }

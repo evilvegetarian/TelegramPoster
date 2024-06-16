@@ -17,7 +17,7 @@ public class BotManagerService : BackgroundService
     private readonly ConcurrentQueue<(string botToken, Update update)> updateQueue = new();
     private readonly SemaphoreSlim semaphore = new(100);
 
-    public BotManagerService(ILogger<BotManagerService> logger, ITelegramBotRepository telegramBotRepository, ICurrentUserProvider currentUserProvider, ICryptoAES cryptoAES)
+    public BotManagerService(ILogger<BotManagerService> logger, TelegramBotRepository telegramBotRepository, ICurrentUserProvider currentUserProvider, ICryptoAES cryptoAES)
     {
         this.logger = logger;
         this.telegramBotRepository = telegramBotRepository;
