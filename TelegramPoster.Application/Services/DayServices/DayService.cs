@@ -1,74 +1,81 @@
 ﻿using TelegramPoster.Application.Interfaces;
 using TelegramPoster.Application.Interfaces.Repositories;
 using TelegramPoster.Application.Models.Day;
-using TelegramPoster.Auth.Interface;
 using TelegramPoster.Domain.Entity;
 
 namespace TelegramPoster.Application.Services.DayServices;
 
 public class DayService : IDayService
 {
-    private readonly ICurrentUserProvider currentUserProvider;
     private readonly IDayRepository dayRepository;
     private readonly IGuidManager guidManager;
     private readonly ITimePostingRepository timePostingRepository;
-    private readonly ICryptoAES cryptoAES;
 
     public DayService(IGuidManager guidManager,
         IDayRepository dayRepository,
-        ITimePostingRepository timePostingRepository,
-        ICurrentUserProvider currentUserProvider,
-        ICryptoAES cryptoAES)
+        ITimePostingRepository timePostingRepository)
     {
         this.guidManager = guidManager;
         this.dayRepository = dayRepository;
         this.timePostingRepository = timePostingRepository;
-        this.currentUserProvider = currentUserProvider;
-        this.cryptoAES = cryptoAES;
     }
 
     public async Task CreateForDayOfWeek(DayOfWeekScheduleForm createDayOfWeekSchedule)
     {
         var days = new List<Day>();
         var timePostings = new List<TimePosting>();
+        var daysSchedule = await dayRepository.GetListByScheduleIdAsync(createDayOfWeekSchedule.ScheduleId);
+        var timing = await timePostingRepository.GetByDayIdsAsync(daysSchedule.Select(x => x.Id).ToList());
 
         foreach (var dayForm in createDayOfWeekSchedule.DayOfWeekForms)
         {
-            var newDay = new Day
+            var dayExist = daysSchedule.Find(x => x.DayOfWeek == dayForm.DayOfWeekPosting);
+
+            var day = dayExist ?? new Day
             {
                 Id = guidManager.NewGuid(),
                 DayOfWeek = dayForm.DayOfWeekPosting,
                 ScheduleId = createDayOfWeekSchedule.ScheduleId
             };
 
-            days.Add(newDay);
+            if (dayExist == null)
+            {
+                days.Add(day);
+            }
 
             if (dayForm.IsInterval)
             {
-                var dayTime = dayForm.CreateDayScheduleIntervalForms;
-                if (dayTime == null)
-                    throw new ArgumentException("ss");
+                var dayTime = dayForm.CreateDayScheduleIntervalForms!;
+
                 var i = dayTime.StartPosting;
                 while (i <= dayTime.EndPosting)
                 {
-                    timePostings.Add(new TimePosting
+                    if (!timing.Exists(t => t.Time == i))
                     {
-                        Id = guidManager.NewGuid(),
-                        DayId = newDay.Id,
-                        Time = i
-                    });
+                        timePostings.Add(new TimePosting
+                        {
+                            Id = guidManager.NewGuid(),
+                            DayId = day.Id,
+                            Time = i
+                        });
+                    }
                     i = i.AddMinutes(dayTime.Interval);
                 }
             }
             else
             {
                 foreach (var dayTime in dayForm.TimesPosting)
-                    timePostings.Add(new TimePosting
+                {
+                    if (!timing.Exists(t => t.Time == dayTime))
                     {
-                        Id = guidManager.NewGuid(),
-                        DayId = newDay.Id,
-                        Time = dayTime
-                    });
+                        timePostings.Add(new TimePosting
+                        {
+                            Id = guidManager.NewGuid(),
+                            DayId = day.Id,
+                            Time = dayTime
+                        });
+                    }
+                }
             }
         }
 
