@@ -31,4 +31,14 @@ public class TelegramController : ControllerBase
         }
         return BadRequest(ModelState);
     }
+
+    /// <summary>
+    /// Получение всех телеграмм ботов пользователя
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet(nameof(TelegramBots))]
+    public async Task<IActionResult> TelegramBots()
+    {
+        return Ok(await telegramService.GetTelegramBots());
+    }
 }

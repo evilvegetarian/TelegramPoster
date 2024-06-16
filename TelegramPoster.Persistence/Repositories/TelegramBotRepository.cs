@@ -9,8 +9,8 @@ public class TelegramBotRepository(ISqlConnectionFactory connection) : ITelegram
     public async Task AddAsync(TelegramBot telegramBot)
     {
         const string sql = """
-                           INSERT INTO "TelegramBot" ("Id", "UserId", "ApiTelegram", "BotStatus", "ChatIdWithBotUser")
-                           VALUES (@Id, @UserId, @ApiTelegram, @BotStatus, @ChatIdWithBotUser)
+                           INSERT INTO "TelegramBot" ("Id", "UserId", "ApiTelegram", "BotStatus", "ChatIdWithBotUser", "NameBot")
+                           VALUES (@Id, @UserId, @ApiTelegram, @BotStatus, @ChatIdWithBotUser, @NameBot)
                            """;
         using var db = connection.Create();
         await db.ExecuteAsync(sql, telegramBot);

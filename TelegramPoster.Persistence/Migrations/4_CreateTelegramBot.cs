@@ -12,12 +12,18 @@ public class CreateTelegramBot : Migration
             .WithColumn(nameof(TelegramBot.Id)).AsGuid().PrimaryKey().NotNullable()
             .WithColumn(nameof(TelegramBot.UserId)).AsGuid().NotNullable()
             .WithColumn(nameof(TelegramBot.ApiTelegram)).AsString(100).NotNullable()
+            .WithColumn(nameof(TelegramBot.NameBot)).AsString(100).NotNullable()
             .WithColumn(nameof(TelegramBot.ChatIdWithBotUser)).AsInt64().NotNullable()
             .WithColumn(nameof(TelegramBot.BotStatus)).AsInt16().NotNullable();
 
         Create.ForeignKey()
             .FromTable(nameof(TelegramBot)).ForeignColumn(nameof(TelegramBot.UserId))
             .ToTable(nameof(User)).PrimaryColumn(nameof(User.Id));
+
+        Create.Index("UX_UserId_ApiTelegram")
+            .OnTable(nameof(TelegramBot))
+            .OnColumn(nameof(TelegramBot.UserId)).Unique()
+            .OnColumn(nameof(TelegramBot.ApiTelegram)).Unique();
     }
 
     public override void Down()
