@@ -1,4 +1,5 @@
 ﻿using TelegramPoster.Domain.Entity;
+using TelegramPoster.Domain.Enum;
 
 namespace TelegramPoster.Persistence.Repositories;
 public interface ITelegramBotRepository

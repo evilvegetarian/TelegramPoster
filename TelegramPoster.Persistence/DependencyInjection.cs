@@ -1,7 +1,9 @@
-﻿using FluentMigrator.Runner;
+﻿using Dapper;
+using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Scrutor;
+using System.Data;
 using TelegramPoster.Persistence.Context;
 
 namespace TelegramPoster.Persistence;
@@ -17,6 +19,8 @@ public static class DependencyInjection
                 .WithGlobalConnectionString(connectionString)
                 .ScanIn(typeof(DependencyInjection).Assembly).For.Migrations())
             .AddLogging(lb => lb.AddConsole());
+        SqlMapper.AddTypeHandler(new SqlTimeOnlyTypeHandler());
+        SqlMapper.AddTypeHandler(new SqlDateOnlyTypeHandler());
 
         services.AddSingleton<ISqlConnectionFactory>(_ => new PostgreSqlConnectionFactory(connectionString));
 
@@ -35,8 +39,8 @@ public static class DependencyInjection
 
     public static IServiceProvider AddPersistenceServiceProvider(this IServiceProvider serviceProvider)
     {
-        serviceProvider.RevertDatabaseToVersion(3);
-        serviceProvider.UpdateDatabase();
+        //serviceProvider.RevertDatabaseToVersion(0);
+        //serviceProvider.UpdateDatabase();
         return serviceProvider;
     }
 
@@ -52,6 +56,32 @@ public static class DependencyInjection
         using var scope = serviceProvider.CreateScope();
         var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
         runner.MigrateDown(targetVersion);
+    }
+    public class SqlTimeOnlyTypeHandler : SqlMapper.TypeHandler<TimeOnly>
+    {
+        public override void SetValue(IDbDataParameter parameter, TimeOnly time)
+        {
+            parameter.Value = time.ToTimeSpan();
+        }
+
+        public override TimeOnly Parse(object value)
+        {
+            return TimeOnly.FromTimeSpan((TimeSpan)value);
+        }
+    }
+
+    public class SqlDateOnlyTypeHandler : SqlMapper.TypeHandler<DateOnly>
+    {
+        public override void SetValue(IDbDataParameter parameter, DateOnly date)
+        {
+            parameter.Value = date.ToDateTime(new TimeOnly(0, 0));
+            parameter.DbType = DbType.Date;
+        }
+
+        public override DateOnly Parse(object value)
+        {
+            return DateOnly.FromDateTime((DateTime)value);
+        }
     }
 }
 

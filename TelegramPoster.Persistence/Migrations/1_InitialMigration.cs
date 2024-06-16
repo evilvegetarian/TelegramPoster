@@ -14,8 +14,7 @@ public class InitialMigration : Migration
             .WithColumn(nameof(User.PasswordHash)).AsString().NotNullable()
             .WithColumn(nameof(User.Email)).AsString().NotNullable().Unique()
             .WithColumn(nameof(User.TelegramUserName)).AsString().Nullable().Unique()
-            .WithColumn(nameof(User.PhoneNumber)).AsString().Nullable().Unique()
-            .WithColumn(nameof(User.TelegramSvalka)).AsString().Nullable().Unique();
+            .WithColumn(nameof(User.PhoneNumber)).AsString().Nullable().Unique();
 
         Create.Table(nameof(Schedule))
             .WithColumn(nameof(Schedule.Id)).AsGuid().PrimaryKey()
@@ -33,6 +32,16 @@ public class InitialMigration : Migration
             .WithColumn(nameof(TimePosting.Id)).AsGuid().PrimaryKey()
             .WithColumn(nameof(TimePosting.DayId)).AsGuid().NotNullable()
             .WithColumn(nameof(TimePosting.Time)).AsTime().NotNullable();
+
+        Create.Index("UX_ScheduleId_DayOfWeek")
+            .OnTable(nameof(Day))
+            .OnColumn(nameof(Day.ScheduleId)).Unique()
+            .OnColumn(nameof(Day.DayOfWeek)).Unique();
+
+        Create.Index("UX_DayId_Time")
+            .OnTable(nameof(TimePosting))
+            .OnColumn(nameof(TimePosting.DayId)).Unique()
+            .OnColumn(nameof(TimePosting.Time)).Unique();
 
         Create.ForeignKey()
             .FromTable(nameof(Day)).ForeignColumn(nameof(Day.ScheduleId))

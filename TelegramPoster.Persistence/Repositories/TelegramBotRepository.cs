@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using TelegramPoster.Domain.Entity;
+using TelegramPoster.Domain.Enum;
 
 namespace TelegramPoster.Persistence.Repositories;
 
@@ -8,8 +9,8 @@ public class TelegramBotRepository(ISqlConnectionFactory connection) : ITelegram
     public async Task AddAsync(TelegramBot telegramBot)
     {
         const string sql = """
-                           INSERT INTO "TelegramBot" ("Id", "UserId", "ApiTelegram", "BotStatus")
-                           VALUES (@Id, @UserId, @ApiTelegram, @BotStatus)
+                           INSERT INTO "TelegramBot" ("Id", "UserId", "ApiTelegram", "BotStatus", "ChatIdWithBotUser")
+                           VALUES (@Id, @UserId, @ApiTelegram, @BotStatus, @ChatIdWithBotUser)
                            """;
         using var db = connection.Create();
         await db.ExecuteAsync(sql, telegramBot);

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using TelegramPoster.Api.Controllers;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using TelegramPoster.Application;
 using TelegramPoster.Auth;
 using TelegramPoster.Persistence;
@@ -16,6 +17,10 @@ public class Program
 
         var db = builder.Configuration.GetSection(nameof(DataBase)).Get<DataBase>();
 
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.UseDateOnlyTimeOnlyStringConverters();
+        });
 
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddControllers();
@@ -37,6 +42,7 @@ public class Program
         builder.Services.AddUtility();
 
         var app = builder.Build();
+
         //app.UseExceptionHandler("/api/ApiError");
 
         app.Use(async (context, next) =>
@@ -72,6 +78,8 @@ public class Program
         {
             x.WithOrigins("http://localhost:5173");
         });
+
+
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();

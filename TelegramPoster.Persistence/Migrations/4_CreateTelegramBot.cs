@@ -12,7 +12,7 @@ public class CreateTelegramBot : Migration
             .WithColumn(nameof(TelegramBot.Id)).AsGuid().PrimaryKey().NotNullable()
             .WithColumn(nameof(TelegramBot.UserId)).AsGuid().NotNullable()
             .WithColumn(nameof(TelegramBot.ApiTelegram)).AsString(100).NotNullable()
-            .WithColumn(nameof(TelegramBot.ChatIdWithBotUser)).AsString(100).Nullable()
+            .WithColumn(nameof(TelegramBot.ChatIdWithBotUser)).AsInt64().NotNullable()
             .WithColumn(nameof(TelegramBot.BotStatus)).AsInt16().NotNullable();
 
         Create.ForeignKey()
