@@ -1,6 +1,8 @@
 ﻿using TelegramPoster.Application.Interfaces;
+using TelegramPoster.Application.Validator.TelegramBot;
 using TelegramPoster.Auth.Interface;
 using TelegramPoster.Domain.Entity;
+using TelegramPoster.Domain.Enum;
 using TelegramPoster.Persistence.Repositories;
 
 namespace TelegramPoster.Application.Services.TelegramServices;
@@ -19,7 +21,7 @@ public class TelegramService : ITelegramService
         this.cryptoAES = cryptoAES;
     }
 
-    public async Task AddTelegramBotAsync(ApiTelegramForm apiTelegramModel)
+    public async Task AddTelegramBotAsync(ApiTelegramValidateResult apiTelegramModel)
     {
         var telegramBot = new TelegramBot
         {
@@ -27,8 +29,9 @@ public class TelegramService : ITelegramService
             UserId = currentUserProvider.Current().UserId,
             ApiTelegram = cryptoAES.Encrypt(apiTelegramModel.ApiTelegram),
             BotStatus = BotStatus.Register,
+            ChatIdWithBotUser = apiTelegramModel.ChatWithBotId.Value,
         };
+
         await telegramBotRepository.AddAsync(telegramBot);
     }
 }
-public record ApiTelegramForm(string ApiTelegram);

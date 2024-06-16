@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Telegram.Bot;
 using TelegramPoster.Application.Interfaces;
 using TelegramPoster.Application.Interfaces.Repositories;
 using TelegramPoster.Application.Models.Message;
 using TelegramPoster.Application.Services.Shared;
+using TelegramPoster.Application.Validator.Message;
 using TelegramPoster.Auth.Interface;
 using TelegramPoster.Domain.Entity;
 using TelegramPoster.Domain.Enum;
@@ -18,12 +18,10 @@ public class MessageService : IMessageService
     private readonly IGuidManager guidManager;
     private readonly IMessageTelegramRepository messageTelegramRepository;
     private readonly ITimePostingRepository postingRepository;
-    private readonly IScheduleRepository scheduleRepository;
     private readonly ITelegramBotRepository telegramBotRepository;
     private readonly ICryptoAES cryptoAES;
 
     public MessageService(ITimePostingRepository postingRepository,
-        IScheduleRepository scheduleRepository,
         IGuidManager guidManager,
         IDayRepository dayRepository,
         IMessageTelegramRepository messageTelegramRepository,
@@ -34,25 +32,20 @@ public class MessageService : IMessageService
         this.messageTelegramRepository = messageTelegramRepository;
         this.filesTelegramRepository = filesTelegramRepository;
         this.postingRepository = postingRepository;
-        this.scheduleRepository = scheduleRepository;
         this.guidManager = guidManager;
         this.dayRepository = dayRepository;
         this.telegramBotRepository = telegramBotRepository;
         this.cryptoAES = cryptoAES;
     }
+
     /// <summary>
     ///     Метод принимает сколько угодно медиафайлов и делает из них по одному сообщению
     /// </summary>
-    public async Task GenerateOneMessagesFromFiles(MessagesFromFilesForm messagesFromFilesForm)
+    public async Task GenerateOneMessagesFromFiles(MessagesFromFilesForm messagesFromFilesForm, MessagesFromFilesFormResultValidate resultValidate)
     {
-        var bot = await telegramBotRepository.GetAsync(messagesFromFilesForm.BotId);
+        var botClient = resultValidate.TelegramBot!;
 
-        var botClient = new TelegramBotClient(cryptoAES.Decrypt(bot.ApiTelegram));
-
-        List<FileMessage> file = await FileSharedService.GetFileMessageInTelegramByFile(botClient, messagesFromFilesForm.Files, bot.ChatIdWithBotUser!.Value);
-
-        var schedule = await scheduleRepository.GetAsync(messagesFromFilesForm.ScheduleId)
-            ?? throw new BadHttpRequestException("");
+        List<FileMessage> file = await FileSharedService.GetFileMessageInTelegramByFile(botClient, messagesFromFilesForm.Files, resultValidate.ChatIdWithBotUser);
 
         var days = await dayRepository.GetListByScheduleIdAsync(messagesFromFilesForm.ScheduleId);
         var timing = await postingRepository.GetByDayIdsAsync(days.ConvertAll(x => x.Id));

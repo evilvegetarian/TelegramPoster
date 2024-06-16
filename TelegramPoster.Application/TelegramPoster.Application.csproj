@@ -7,9 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Validator\Message\" />
     <Folder Include="Validator\Schedule\" />
-    <Folder Include="Validator\TelegramBot\" />
     <Folder Include="Validator\User\" />
   </ItemGroup>
 

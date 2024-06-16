@@ -29,11 +29,11 @@ public class DayValidator(IScheduleRepository scheduleRepository) : IDayValidato
                 else
                 {
                     var intervalForm = dayOfWeekForm.CreateDayScheduleIntervalForms;
-                    if (intervalForm.StartPosting < intervalForm.EndPosting)
+                    if (intervalForm.StartPosting > intervalForm.EndPosting)
                     {
                         modelState.AddModelError(nameof(DayOfWeekScheduleIntervalForm), "Начальная дата должна быть меньше, чем конченная");
                     }
-                    else if (TimeSpan.FromMinutes(intervalForm.Interval) < (intervalForm.EndPosting - intervalForm.StartPosting))
+                    else if (TimeSpan.FromMinutes(intervalForm.Interval) > (intervalForm.EndPosting - intervalForm.StartPosting))
                     {
                         modelState.AddModelError(nameof(intervalForm.Interval), "");
                     }

@@ -10,7 +10,7 @@ public static class DependencyInjection
         services.Scan(scan => scan
             .FromAssembliesOf(typeof(DependencyInjection))
             .AddClasses(classes => classes
-                .Where(type => type.IsClass && (type.Name.EndsWith("Service")|| type.Name.EndsWith("Validator")))
+                .Where(type => type.IsClass && (type.Name.EndsWith("Service") || type.Name.EndsWith("Validator")))
             )
             .UsingRegistrationStrategy(RegistrationStrategy.Throw)
             .AsImplementedInterfaces()
