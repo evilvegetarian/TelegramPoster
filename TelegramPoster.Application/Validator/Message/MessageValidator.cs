@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Telegram.Bot;
+using Telegram.Bot.Types;
 using TelegramPoster.Application.Interfaces.Repositories;
 using TelegramPoster.Application.Models.Message;
 using TelegramPoster.Auth.Interface;
@@ -17,12 +18,14 @@ public class MessageValidator : IMessageValidator
     private readonly IScheduleRepository scheduleRepository;
     private readonly ITelegramBotRepository telegramBotRepository;
     private readonly ICryptoAES cryptoAES;
+    private readonly ICurrentUserProvider currentUserProvider;
 
-    public MessageValidator(IScheduleRepository scheduleRepository, ITelegramBotRepository telegramBotRepository, ICryptoAES cryptoAES)
+    public MessageValidator(IScheduleRepository scheduleRepository, ITelegramBotRepository telegramBotRepository, ICryptoAES cryptoAES, ICurrentUserProvider currentUserProvider)
     {
         this.scheduleRepository = scheduleRepository;
         this.telegramBotRepository = telegramBotRepository;
         this.cryptoAES = cryptoAES;
+        this.currentUserProvider = currentUserProvider;
     }
 
     public async Task<MessagesFromFilesFormResultValidate> MessagesFromFilesFormValidator(MessagesFromFilesForm messagesFromFilesForm, ModelStateDictionary modelState)
@@ -37,7 +40,13 @@ public class MessageValidator : IMessageValidator
         if (bot != null)
         {
             var botClient = new TelegramBotClient(cryptoAES.Decrypt(bot.ApiTelegram));
+
             botClient.AssertFound(modelState);
+
+            if (bot.UserId != currentUserProvider.Current().UserId)
+            {
+                modelState.AddModelError(nameof(User), "У пользователя нет доступа для данного бота");
+            }
             if (botClient != null)
             {
                 if (bot.ChatIdWithBotUser != null)
