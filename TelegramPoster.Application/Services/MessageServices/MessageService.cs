@@ -47,18 +47,8 @@ public class MessageService : IMessageService
 
         List<FileMessage> file = await FileSharedService.GetFileMessageInTelegramByFile(botClient, messagesFromFilesForm.Files, resultValidate.ChatIdWithBotUser);
 
-        var days = await dayRepository.GetListByScheduleIdAsync(messagesFromFilesForm.ScheduleId);
-        var timing = await postingRepository.GetByDayIdsAsync(days.ConvertAll(x => x.Id));
-        Dictionary<DayOfWeek, List<TimeOnly>> dayTimeDict = [];
-        foreach (var day in days)
-        {
-            var times = timing
-                .Where(x => x.DayId == day.Id)
-                .Select(x => x.Time)
-                .OrderBy(x => x)
-                .ToList();
-            dayTimeDict.Add(day.DayOfWeek!.Value, times);
-        }
+        var days = await dayRepository.GetListWithTimeByScheduleIdAsync(messagesFromFilesForm.ScheduleId);
+        var dayTimeDict = days.ToDictionary(day => day.DayOfWeek.Value, time => time.TimePostings.Select(x => x.Time).ToList());
 
         var allTimingMessages = await messageTelegramRepository.GetAllTimingMessageByScheduleIdAsync(messagesFromFilesForm.ScheduleId);
 

@@ -1,15 +1,16 @@
+using TelegramPoster.Persistence;
+
 namespace TelegramPoster.Background;
 
 public class Program
 {
     public static void Main(string[] args)
     {
-        var builder = WebApplication.CreateBuilder(args);
-        builder.Services.AddHostedService<BotManagerService>();
-        var app = builder.Build();
+        var builder = Host.CreateApplicationBuilder(args);
+        builder.Services.AddPersistence(builder.Configuration);
+        builder.Services.AddHostedService<MessageService>();
 
-        app.MapGet("/", () => "Hello World!");
-
-        app.Run();
+        var host = builder.Build();
+        host.Run();
     }
 }

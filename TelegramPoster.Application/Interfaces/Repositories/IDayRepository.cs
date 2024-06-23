@@ -8,4 +8,5 @@ public interface IDayRepository
     Task AddListAsync(List<Day> days);
     Task<Day?> GetAsync(Guid id);
     Task<List<Day>> GetListByScheduleIdAsync(Guid scheduleId);
+    Task<List<Day>> GetListWithTimeByScheduleIdAsync(Guid scheduleId);
 }

@@ -15,7 +15,7 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        var db = builder.Configuration.GetSection(nameof(DataBase)).Get<DataBase>();
+        //var db = builder.Configuration.GetSection(nameof(DataBase)).Get<DataBase>();
 
         builder.Services.AddSwaggerGen(options =>
         {
@@ -26,7 +26,7 @@ public class Program
         builder.Services.AddControllers();
         builder.Services.AddSwaggerGen();
         builder.Services.AddHealthChecks()
-            .AddNpgSql(connectionString: db!.ConnectionString, name: "npsql", tags: ["npsql"])
+        //    .AddNpgSql(connectionString: db!.ConnectionString, name: "npsql", tags: ["npsql"])
             .AddUrlGroup(new Uri("http://example.com"), name: "Example URL", tags: ["Example"]);
 
         builder.WebHost.UseKestrel(opt =>
@@ -37,7 +37,7 @@ public class Program
         //ext
         builder.Services.AddApiAuthentication(builder.Configuration);
 
-        builder.Services.AddPersistence(db!.ConnectionString);
+        builder.Services.AddPersistence(builder.Configuration);
         builder.Services.AddApplication();
         builder.Services.AddUtility();
 
@@ -78,7 +78,6 @@ public class Program
         {
             x.WithOrigins("http://localhost:5173");
         });
-
 
         app.UseAuthentication();
         app.UseAuthorization();

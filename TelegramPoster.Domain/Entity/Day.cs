@@ -9,5 +9,5 @@ public class Day
 
 
     public Schedule? Schedule { get; set; }
-    public ICollection<TimePosting> TimePostings { get; init; } = [];
+    public ICollection<TimePosting> TimePostings { get; set; } = [];
 }

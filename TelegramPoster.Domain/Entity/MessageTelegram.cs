@@ -17,4 +17,6 @@ public class MessageTelegram
     /// </summary>
     public required bool IsTextMessage { get; init; }
     public required MessageStatus Status { get; init; }
+
+    public List<FilesTelegram>? FilesTelegrams { get; set; } = [];
 }

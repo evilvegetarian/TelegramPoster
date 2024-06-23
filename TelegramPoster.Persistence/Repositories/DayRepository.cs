@@ -46,4 +46,66 @@ public class DayRepository(ISqlConnectionFactory connection) : IDayRepository
         using var db = connection.Create();
         return (await db.QueryAsync<Day>(sql, new { ScheduleId = scheduleId })).ToList();
     }
+
+    public async Task<List<Day>> GetListWithTimeByScheduleIdAsync(Guid scheduleId)
+    {
+        const string sql = """
+                           SELECT * 
+                           FROM "Day" day
+                           JOIN "TimePosting" tp on tp."DayId" =day."Id" 
+                           WHERE day."ScheduleId"=@ScheduleId
+                           """;
+        using var db = connection.Create();
+
+
+
+        //    var dd = await db.QueryAsync<Day, TimePosting, Day>(
+        //          sql,
+        //          (day, timePosting) =>
+        //          {
+        //              day.TimePostings.Add(timePosting);
+        //              return day;
+        //          },
+        //          new { ScheduleId = scheduleId },
+        //          splitOn: "Id"
+        //      );
+
+        //    var groupedResults = dd
+        //.GroupBy(day => day.Id)
+        //.Select(g =>
+        //{
+        //    var groupedDay = g.First();
+        //    groupedDay.TimePostings = g.SelectMany(day => day.TimePostings).ToList();
+        //    return groupedDay;
+        //})
+        //.ToList();
+
+        var dayTimePostingsLookup = new Dictionary<Guid, Day>();
+
+
+        await db.QueryAsync<Day, TimePosting, Day>(
+            sql,
+            (day, timePosting) =>
+            {
+                if (!dayTimePostingsLookup.TryGetValue(day.Id, out var dayEntry))
+                {
+                    dayEntry = day;
+                    dayEntry.TimePostings = new List<TimePosting>();
+                    dayTimePostingsLookup.Add(day.Id, dayEntry);
+                }
+
+                if (timePosting != null)
+                {
+                    dayEntry.TimePostings.Add(timePosting);
+                }
+
+                return dayEntry;
+            },
+            new { ScheduleId = scheduleId },
+            splitOn: "Id"
+        );
+
+        var result = dayTimePostingsLookup.Values.ToList();
+        return result;
+    }
 }

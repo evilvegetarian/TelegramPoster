@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using TelegramPoster.Application.Interfaces.Repositories;
 using TelegramPoster.Domain.Entity;
+using TelegramPoster.Domain.Enum;
 
 namespace TelegramPoster.Persistence.Repositories;
 
@@ -79,5 +80,42 @@ public class MessageTelegramRepository(ISqlConnectionFactory connection) : IMess
 
         using var db = connection.Create();
         return (await db.QueryAsync<DateTime>(sql, parameters)).ToList();
+    }
+
+    public async Task<List<MessageTelegram>> GetByStatusWithFileAsync(MessageStatus messageStatus)
+    {
+        var sql = """
+                  SELECT *
+                  FROM "MessageTelegram" mt
+                  INNER JOIN "FilesTelegram" ft ON ft."MessageTelegramId" = mt."Id" 
+                  WHERE "Status"=@Status
+                  """;
+        using var db = connection.Create();
+
+
+        var messageFileLookup = new Dictionary<Guid, MessageTelegram>();
+
+        await db.QueryAsync<MessageTelegram, FilesTelegram, MessageTelegram>(
+            sql,
+            (day, file) =>
+            {
+                if (!messageFileLookup.TryGetValue(day.Id, out var message))
+                {
+                    message = day;
+                    messageFileLookup.Add(day.Id, message);
+                }
+
+                if (file != null)
+                {
+                    message.FilesTelegrams.Add(file);
+                }
+
+                return message;
+            },
+            new { Status = messageStatus },
+            splitOn: "Id"
+        );
+
+        return messageFileLookup.Values.ToList();
     }
 }

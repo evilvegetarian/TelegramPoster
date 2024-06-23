@@ -11,11 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramPoster.Domain", "Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramPoster.Auth", "TelegramPoster.Auth\TelegramPoster.Auth.csproj", "{C41434D8-E7DD-4FFE-AE25-B5E30EF8AC0B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramPoster.Api", "TelegramPoster.Api\TelegramPoster.Api.csproj", "{883BE3E0-34B0-4F60-831D-265EA0C9A44A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramPoster.Api", "TelegramPoster.Api\TelegramPoster.Api.csproj", "{883BE3E0-34B0-4F60-831D-265EA0C9A44A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramPoster.Application", "TelegramPoster.Application\TelegramPoster.Application.csproj", "{2AA77906-BCAF-4B08-A7D4-12F521BBD103}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramPoster.Application", "TelegramPoster.Application\TelegramPoster.Application.csproj", "{2AA77906-BCAF-4B08-A7D4-12F521BBD103}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramPoster.Background", "TelegramPoster.Background\TelegramPoster.Background.csproj", "{E128920A-1805-43C8-B72C-1DB278DC5C96}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramPoster.Background", "TelegramPoster.Background\TelegramPoster.Background.csproj", "{53F9A67B-86A4-47B1-9248-64060D910195}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,10 +47,10 @@ Global
 		{2AA77906-BCAF-4B08-A7D4-12F521BBD103}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2AA77906-BCAF-4B08-A7D4-12F521BBD103}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2AA77906-BCAF-4B08-A7D4-12F521BBD103}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E128920A-1805-43C8-B72C-1DB278DC5C96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E128920A-1805-43C8-B72C-1DB278DC5C96}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E128920A-1805-43C8-B72C-1DB278DC5C96}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E128920A-1805-43C8-B72C-1DB278DC5C96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53F9A67B-86A4-47B1-9248-64060D910195}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53F9A67B-86A4-47B1-9248-64060D910195}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53F9A67B-86A4-47B1-9248-64060D910195}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53F9A67B-86A4-47B1-9248-64060D910195}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

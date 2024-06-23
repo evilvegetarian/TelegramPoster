@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using FluentMigrator.Runner;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Scrutor;
@@ -10,19 +11,20 @@ namespace TelegramPoster.Persistence;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddPersistence(this IServiceCollection services, string connectionString)
+    public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
+        var dataBase = configuration.GetSection(nameof(DataBase)).Get<DataBase>();
         services
             .AddFluentMigratorCore()
             .ConfigureRunner(run => run
                 .AddPostgres()
-                .WithGlobalConnectionString(connectionString)
+                .WithGlobalConnectionString(dataBase!.ConnectionString)
                 .ScanIn(typeof(DependencyInjection).Assembly).For.Migrations())
             .AddLogging(lb => lb.AddConsole());
         SqlMapper.AddTypeHandler(new SqlTimeOnlyTypeHandler());
         SqlMapper.AddTypeHandler(new SqlDateOnlyTypeHandler());
 
-        services.AddSingleton<ISqlConnectionFactory>(_ => new PostgreSqlConnectionFactory(connectionString));
+        services.AddSingleton<ISqlConnectionFactory>(_ => new PostgreSqlConnectionFactory(dataBase!.ConnectionString));
 
         services.Scan(scan => scan
             .FromAssembliesOf(typeof(DependencyInjection))
