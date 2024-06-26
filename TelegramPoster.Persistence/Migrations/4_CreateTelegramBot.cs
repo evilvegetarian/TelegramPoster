@@ -24,6 +24,10 @@ public class CreateTelegramBot : Migration
             .OnTable(nameof(TelegramBot))
             .OnColumn(nameof(TelegramBot.UserId)).Unique()
             .OnColumn(nameof(TelegramBot.ApiTelegram)).Unique();
+
+        Create.ForeignKey()
+            .FromTable(nameof(Schedule)).ForeignColumn(nameof(Schedule.BotId))
+            .ToTable(nameof(TelegramBot)).PrimaryColumn(nameof(TelegramBot.Id));
     }
 
     public override void Down()

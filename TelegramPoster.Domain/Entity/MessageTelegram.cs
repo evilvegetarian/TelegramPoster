@@ -19,4 +19,5 @@ public class MessageTelegram
     public required MessageStatus Status { get; init; }
 
     public List<FilesTelegram>? FilesTelegrams { get; set; } = [];
+    public Schedule? Schedule { get; set; }
 }

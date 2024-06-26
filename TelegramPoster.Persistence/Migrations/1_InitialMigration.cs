@@ -20,6 +20,7 @@ public class InitialMigration : Migration
             .WithColumn(nameof(Schedule.Id)).AsGuid().PrimaryKey()
             .WithColumn(nameof(Schedule.UserId)).AsGuid().NotNullable()
             .WithColumn(nameof(Schedule.Name)).AsString().NotNullable()
+            .WithColumn(nameof(Schedule.BotId)).AsGuid().NotNullable()
             .WithColumn(nameof(Schedule.ChannelId)).AsInt64().NotNullable();
 
         Create.Table(nameof(Day))

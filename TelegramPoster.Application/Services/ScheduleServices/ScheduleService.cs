@@ -19,7 +19,8 @@ public class ScheduleService(
             Id = guidManager.NewGuid(),
             Name = scheduleDto.Name,
             ChannelId = scheduleDto.ChannelId,
-            UserId = currentUserProvider.Current().UserId
+            UserId = currentUserProvider.Current().UserId,
+            BotId = scheduleDto.BotId
         });
     }
 

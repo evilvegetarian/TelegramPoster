@@ -9,8 +9,8 @@ public class ScheduleRepository(ISqlConnectionFactory connection) : IScheduleRep
     public async Task AddAsync(Schedule schedule)
     {
         const string sql = """
-                           INSERT INTO "Schedule" ("Id", "UserId", "Name", "ChannelId")
-                           VALUES (@Id, @UserId, @Name, @ChannelId)
+                           INSERT INTO "Schedule" ("Id", "UserId", "Name", "ChannelId", "BotId")
+                           VALUES (@Id, @UserId, @Name, @ChannelId, @BotId)
                            """;
         using var db = connection.Create();
         await db.ExecuteAsync(sql, schedule);

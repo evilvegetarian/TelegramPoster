@@ -10,6 +10,8 @@ public class User
     public string? UserName { get; set; }
     public string? PhoneNumber { get; set; }
     public string? TelegramUserName { get; set; }
+
+    public List<Schedule> Schedules { get; set; } = [];
 }
 
 public static class UserExtension
