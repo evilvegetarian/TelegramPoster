@@ -1,5 +1,9 @@
 using Hangfire;
+using Telegram.Bot;
+using Telegram.Bot.Types;
 using TelegramPoster.Application.Interfaces.Repositories;
+using TelegramPoster.Auth;
+using TelegramPoster.Auth.Interface;
 using TelegramPoster.Domain.Entity;
 using TelegramPoster.Domain.Enum;
 using TelegramPoster.Persistence;
@@ -21,65 +25,54 @@ public class Program
         });
 
         builder.Services.AddHangfireServer();
+        builder.Services.AddHttpContextAccessor();
 
         builder.Services.AddScoped<MessageService>();
+        builder.Services.AddScoped<ITelegramBotService, TelegramBotService>();
 
         builder.Services.AddPersistence(builder.Configuration);
+        builder.Services.AddApiAuthentication(builder.Configuration);
 
         var app = builder.Build();
 
         app.UseHangfireDashboard();
-        app.UseHangfireServer();
 
         var serviceProvider = app.Services;
+
         RecurringJob.AddOrUpdate(
         "process-messages-job",
-         () => serviceProvider.GetService<MessageService>().ProcessMessages(),
+            () => serviceProvider.CreateScope().ServiceProvider.GetRequiredService<MessageService>().ProcessMessages(),
         "* * * * *");
 
-        app.MapGet("/", () => "Hello World!");
+        app.MapGet("/", context =>
+        {
+            context.Response.Redirect("hangfire");
+            return Task.CompletedTask;
+        });
 
         app.Run();
     }
 }
 public class MessageService
 {
-    private readonly ILogger<MessageService> logger;
-    private readonly IServiceProvider services;
     private readonly ITelegramBotService telegramBotService;
+    private readonly IMessageTelegramRepository messageTelegramRepository;
 
-    public MessageService(ILogger<MessageService> logger, IServiceProvider services, ITelegramBotService telegramBotService)
+    public MessageService(ITelegramBotService telegramBotService, IMessageTelegramRepository messageTelegramRepository)
     {
-        this.logger = logger;
-        this.services = services;
         this.telegramBotService = telegramBotService;
+        this.messageTelegramRepository = messageTelegramRepository;
     }
 
     public async Task ProcessMessages()
     {
-        using var scope = services.CreateScope();
-
-        var scopedProcessingService = scope.ServiceProvider.GetRequiredService<IMessageTelegramRepository>();
-
-        var messages = await scopedProcessingService.GetByStatusWithFileAsync(MessageStatus.Register);
+        var messages = await messageTelegramRepository.GetByStatusWithFileAndScheduleAndBotAsync(MessageStatus.Register);
 
         foreach (var item in messages)
         {
             BackgroundJob.Schedule(() => telegramBotService.SendMessageAsync(item), item.TimePosting);
         }
-    }
-}
-
-public class MessageSeervice
-{
-    private readonly IServiceProvider services;
-    private readonly ILogger<MessageService> logger;
-
-
-    public MessageSeervice(IServiceProvider services, ILogger<MessageService> logger)
-    {
-        this.services = services;
-        this.logger = logger;
+        await messageTelegramRepository.UpdateStatusAsync(messages.Select(x => x.Id).ToList(), MessageStatus.InHandle);
     }
 }
 
@@ -90,8 +83,34 @@ public interface ITelegramBotService
 
 public class TelegramBotService : ITelegramBotService
 {
+    private readonly ICryptoAES cryptoAES;
+    private readonly IMessageTelegramRepository messageTelegramRepository;
+
+    public TelegramBotService(ICryptoAES cryptoAES, IServiceProvider services, IMessageTelegramRepository messageTelegramRepository)
+    {
+        this.cryptoAES = cryptoAES;
+        this.messageTelegramRepository = messageTelegramRepository;
+    }
+
     public async Task SendMessageAsync(MessageTelegram messageTelegram)
     {
+        var telegramBot = new TelegramBotClient(cryptoAES.Decrypt(messageTelegram.Schedule!.TelegramBot!.ApiTelegram));
 
+        var medias = messageTelegram.FilesTelegrams.Select(file =>
+        {
+            if (file.Type == ContentTypes.Photo)
+            {
+                return new InputMediaPhoto(InputFile.FromFileId(file.TgFileId)) as IAlbumInputMedia;
+            }
+            else if (file.Type == ContentTypes.Video)
+            {
+                return new InputMediaVideo(InputFile.FromFileId(file.TgFileId)) as IAlbumInputMedia;
+            }
+            return null;
+        }).Where(media => media != null);
+
+        await telegramBot.SendMediaGroupAsync(messageTelegram.Schedule!.ChannelId, media: medias);
+
+        await messageTelegramRepository.UpdateStatusAsync(messageTelegram.Id, MessageStatus.Send);
     }
 }
