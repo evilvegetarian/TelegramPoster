@@ -57,31 +57,7 @@ public class DayRepository(ISqlConnectionFactory connection) : IDayRepository
                            """;
         using var db = connection.Create();
 
-
-
-        //    var dd = await db.QueryAsync<Day, TimePosting, Day>(
-        //          sql,
-        //          (day, timePosting) =>
-        //          {
-        //              day.TimePostings.Add(timePosting);
-        //              return day;
-        //          },
-        //          new { ScheduleId = scheduleId },
-        //          splitOn: "Id"
-        //      );
-
-        //    var groupedResults = dd
-        //.GroupBy(day => day.Id)
-        //.Select(g =>
-        //{
-        //    var groupedDay = g.First();
-        //    groupedDay.TimePostings = g.SelectMany(day => day.TimePostings).ToList();
-        //    return groupedDay;
-        //})
-        //.ToList();
-
         var dayTimePostingsLookup = new Dictionary<Guid, Day>();
-
 
         await db.QueryAsync<Day, TimePosting, Day>(
             sql,
