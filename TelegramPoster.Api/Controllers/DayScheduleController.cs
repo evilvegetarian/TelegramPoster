@@ -29,7 +29,7 @@ public class DayScheduleController(IDayService dayService, IDayValidator dayVali
     public async Task<IActionResult> DayOfWeekSchedule([FromBody] DayOfWeekScheduleForm dayOfWeekSchedule)
     {
         var resultValidate = await dayValidator.DayOfWeekScheduleFormValidate(dayOfWeekSchedule, ModelState);
-        if (resultValidate)
+        if (ModelState.IsValid)
         {
             await dayService.CreateForDayOfWeek(dayOfWeekSchedule);
             return Ok();

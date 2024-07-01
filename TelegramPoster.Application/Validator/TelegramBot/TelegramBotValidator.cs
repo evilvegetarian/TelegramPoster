@@ -2,16 +2,22 @@
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using TelegramPoster.Application.Models.TelegramBot;
+using TelegramPoster.Auth.Interface;
+using TelegramPoster.Persistence.Repositories;
 
 namespace TelegramPoster.Application.Validator.TelegramBot;
 
-public interface ITelegramBotValidator
-{
-    Task<ApiTelegramValidateResult> ApiTelegramValidate(ApiTelegramForm apiTelegramForm, ModelStateDictionary modelState);
-}
-
 public class TelegramBotValidator : ITelegramBotValidator
 {
+    private readonly ITelegramBotRepository botRepository;
+    private readonly ICryptoAES cryptoAES;
+
+    public TelegramBotValidator(ITelegramBotRepository botRepository, ICryptoAES cryptoAES)
+    {
+        this.botRepository = botRepository;
+        this.cryptoAES = cryptoAES;
+    }
+
     public async Task<ApiTelegramValidateResult> ApiTelegramValidate(ApiTelegramForm apiTelegramForm, ModelStateDictionary modelState)
     {
         var resultValidate = new ApiTelegramValidateResult
@@ -21,6 +27,7 @@ public class TelegramBotValidator : ITelegramBotValidator
         try
         {
             var bot = new TelegramBotClient(apiTelegramForm.ApiTelegram);
+
             var updates = await bot.GetUpdatesAsync();
             var chatId = updates
                 .Select(u => u.Message?.Chat.Id)
@@ -28,8 +35,8 @@ public class TelegramBotValidator : ITelegramBotValidator
 
             resultValidate.ChatWithBotId = chatId;
 
-            var dd = await bot.GetMeAsync();
-            resultValidate.NameBot = dd.Username;
+            var botInfo = await bot.GetMeAsync();
+            resultValidate.NameBot = botInfo.Username;
 
             if (chatId == null)
             {
@@ -44,12 +51,58 @@ public class TelegramBotValidator : ITelegramBotValidator
         resultValidate.IsValid = modelState.IsValid;
         return resultValidate;
     }
+
+    public async Task<AddChannelValidateResult> AddChannelValidate(ChannelForm channelForm, ModelStateDictionary modelState)
+    {
+        var channelResult = new AddChannelValidateResult();
+
+        var bot = await botRepository.GetAsync(channelForm.BotId);
+
+        if (bot.AssertFound(modelState))
+        {
+            var telegramBot = new TelegramBotClient(cryptoAES.Decrypt(bot!.ApiTelegram));
+            var chat = await telegramBot.GetChatAsync(channelForm.Channel.ConvertToTelegramHandle());
+            channelResult.ChannelId = chat.Id;
+        }
+        channelResult.IsValid = modelState.IsValid;
+        return channelResult;
+    }
+
+    public async Task TelegramBotVaildate(string apiTelegram, ModelStateDictionary modelState)
+    {
+
+    }
 }
 
 public class ApiTelegramValidateResult
 {
     public long? ChatWithBotId { get; set; }
-    public required string ApiTelegram { get; set; }
     public string? NameBot { get; set; }
+    public string ApiTelegram { get; set; }
     public bool IsValid { get; set; }
+}
+
+public class AddChannelValidateResult
+{
+    public long ChannelId { get; set; }
+    public bool IsValid { get; set; }
+}
+
+public static class TelegramChanelExtension
+{
+    public static string ConvertToTelegramHandle(this string name)
+    {
+        string prefix = "https://t.me/";
+
+        if (name.StartsWith(prefix))
+        {
+            return string.Concat("@", name.AsSpan(prefix.Length));
+        }
+        else if (!name.StartsWith('@'))
+        {
+            return string.Concat("@", name.AsSpan(prefix.Length));
+        }
+
+        return name;
+    }
 }

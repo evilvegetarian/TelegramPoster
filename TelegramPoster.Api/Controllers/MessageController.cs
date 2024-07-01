@@ -25,7 +25,7 @@ public class MessageController : ControllerBase
     public async Task<IActionResult> OneMessagesFromFiles(MessagesFromFilesForm messagesFromFilesForm)
     {
         var resultValidate = await messageValidator.MessagesFromFilesFormValidator(messagesFromFilesForm, ModelState);
-        if (resultValidate.IsValid)
+        if (ModelState.IsValid)
         {
             await messageServices.GenerateOneMessagesFromFiles(messagesFromFilesForm, resultValidate);
             return Ok();

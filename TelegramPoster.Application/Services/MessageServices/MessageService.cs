@@ -57,20 +57,21 @@ public class MessageService : IMessageService
         var filesTelegram = new List<FilesTelegram>();
         for (int i = 0; i < file.Count; i++)
         {
-            var messageTelegram = new MessageTelegram
+            var messageId = guidManager.NewGuid();
+
+            telegramMessages.Add(new MessageTelegram
             {
-                Id = guidManager.NewGuid(),
+                Id = messageId,
                 ScheduleId = messagesFromFilesForm.ScheduleId,
                 Status = MessageStatus.Register,
                 TimePosting = timesPosting[i],
                 IsTextMessage = false,
-            };
+            });
 
-            telegramMessages.Add(messageTelegram);
             filesTelegram.Add(new FilesTelegram
             {
                 Id = guidManager.NewGuid(),
-                MessageTelegramId = messageTelegram.Id,
+                MessageTelegramId = messageId,
                 TgFileId = file[i].Id,
                 Type = file[i].Type,
             });
