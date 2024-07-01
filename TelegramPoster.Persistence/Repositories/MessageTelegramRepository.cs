@@ -31,17 +31,38 @@ public class MessageTelegramRepository(ISqlConnectionFactory connection) : IMess
     {
         const string sql = """
                            SELECT * FROM "MessageTelegram"
-                           WHERE "Id"=@Id
+                           WHERE "Id" = @Id
                            """;
         using var db = connection.Create();
         return await db.QueryFirstOrDefaultAsync<MessageTelegram>(sql, new { Id = id });
+    }
+
+    public async Task UpdateStatusAsync(List<Guid> ids, MessageStatus status)
+    {
+        const string sql = """
+                       UPDATE "MessageTelegram"
+                       SET "Status" = @Status 
+                       WHERE "Id" = ANY(@Ids)
+                       """;
+        using var db = connection.Create();
+        await db.ExecuteAsync(sql, new { Status = status, Ids = ids.ToArray() });
+    }
+    public async Task UpdateStatusAsync(Guid id, MessageStatus status)
+    {
+        const string sql = """
+                       UPDATE "MessageTelegram"
+                       SET "Status" = @Status 
+                       WHERE "Id" = @Id
+                       """;
+        using var db = connection.Create();
+        await db.ExecuteAsync(sql, new { Status = status, Ids = id });
     }
 
     public async Task<List<MessageTelegram>> GetByScheduleIdAsync(Guid scheduleId, bool? isPosted = null)
     {
         var sql = """
                   SELECT * FROM "MessageTelegram"
-                  WHERE "ScheduleId"=@ScheduleId
+                  WHERE "ScheduleId" = @ScheduleId
                   """;
 
         if (isPosted.HasValue)
@@ -68,7 +89,7 @@ public class MessageTelegramRepository(ISqlConnectionFactory connection) : IMess
 
         if (isPosted.HasValue)
         {
-            sql += """ AND "Status"=@Status """;
+            sql += """ AND "Status" = @Status """;
             parameters.Add("Status", isPosted);
         }
 
@@ -82,40 +103,53 @@ public class MessageTelegramRepository(ISqlConnectionFactory connection) : IMess
         return (await db.QueryAsync<DateTime>(sql, parameters)).ToList();
     }
 
-    public async Task<List<MessageTelegram>> GetByStatusWithFileAsync(MessageStatus messageStatus)
+    public async Task<List<MessageTelegram>> GetByStatusWithFileAndScheduleAndBotAsync(MessageStatus messageStatus)
     {
+        var timeFrom = DateTime.Now.TimeOfDay;
+        var timeTo = DateTime.Now.TimeOfDay.Add(new TimeSpan(0, 0, 1, 0));
+
         var sql = """
-                  SELECT *
-                  FROM "MessageTelegram" mt
-                  INNER JOIN "FilesTelegram" ft ON ft."MessageTelegramId" = mt."Id" 
-                  WHERE "Status"=@Status
-                  """;
+                 SELECT mt.*, ft.*, s.*, tb.*
+                 FROM "MessageTelegram" mt
+                 INNER JOIN "FilesTelegram" ft ON ft."MessageTelegramId" = mt."Id" 
+                 LEFT JOIN "Schedule" s ON s."Id" = mt."ScheduleId"
+                 LEFT JOIN "TelegramBot" tb ON tb."Id" = s."BotId"
+                 WHERE mt."Status" = @Status 
+                 AND mt."TimePosting"::time > @TimeFrom 
+                 AND mt."TimePosting"::time <= @TimeTo
+                 """;
         using var db = connection.Create();
 
+        var messageFileScheduleLookup = new Dictionary<Guid, MessageTelegram>();
 
-        var messageFileLookup = new Dictionary<Guid, MessageTelegram>();
-
-        await db.QueryAsync<MessageTelegram, FilesTelegram, MessageTelegram>(
+        await db.QueryAsync<MessageTelegram, FilesTelegram, Schedule, TelegramBot, MessageTelegram>(
             sql,
-            (day, file) =>
+            (message, file, schedule, bot) =>
             {
-                if (!messageFileLookup.TryGetValue(day.Id, out var message))
+                if (!messageFileScheduleLookup.TryGetValue(message.Id, out var messageEntry))
                 {
-                    message = day;
-                    messageFileLookup.Add(day.Id, message);
+                    messageEntry = message;
+                    messageEntry.Schedule = schedule;
+                    messageFileScheduleLookup.Add(message.Id, messageEntry);
+                }
+
+                if (schedule != null)
+                {
+                    schedule.TelegramBot = bot;
                 }
 
                 if (file != null)
                 {
-                    message.FilesTelegrams.Add(file);
+                    messageEntry.FilesTelegrams!.Add(file);
                 }
 
-                return message;
+                return messageEntry;
             },
-            new { Status = messageStatus },
-            splitOn: "Id"
+            new { Status = messageStatus, TimeFrom = timeFrom, TimeTo = timeTo },
+            splitOn: "Id,Id,Id"
         );
 
-        return messageFileLookup.Values.ToList();
+        return messageFileScheduleLookup.Values.ToList();
     }
+
 }
