@@ -11,7 +11,4 @@ public record MessagesFromFilesForm
 
     [Required]
     public required Guid ScheduleId { get; set; }
-
-    [Required]
-    public required Guid BotId { get; set; }
 }
