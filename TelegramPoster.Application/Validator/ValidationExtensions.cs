@@ -12,4 +12,12 @@ public static class ValidationExtensions
         }
         return true;
     }
+
+    public static void AssertFound<T>(this T? value) where T : class
+    {
+        if (value == null)
+        {
+            throw new BadRequestException(typeof(T).Name, "Запрашиваемый ресурс не найден.");
+        }
+    }
 }

@@ -21,6 +21,7 @@ public static class DependencyInjection
                 .WithGlobalConnectionString(dataBase!.ConnectionString)
                 .ScanIn(typeof(DependencyInjection).Assembly).For.Migrations())
             .AddLogging(lb => lb.AddConsole());
+
         SqlMapper.AddTypeHandler(new SqlTimeOnlyTypeHandler());
         SqlMapper.AddTypeHandler(new SqlDateOnlyTypeHandler());
 
@@ -42,7 +43,7 @@ public static class DependencyInjection
     public static IServiceProvider AddPersistenceServiceProvider(this IServiceProvider serviceProvider)
     {
         //serviceProvider.RevertDatabaseToVersion(0);
-        //serviceProvider.UpdateDatabase();
+        serviceProvider.UpdateDatabase();
         return serviceProvider;
     }
 
