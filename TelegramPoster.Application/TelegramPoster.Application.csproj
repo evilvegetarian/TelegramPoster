@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Validator\Schedule\" />
-    <Folder Include="Validator\User\" />
   </ItemGroup>
 
   <ItemGroup>

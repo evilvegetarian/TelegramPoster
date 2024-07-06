@@ -1,6 +1,7 @@
 ﻿using TelegramPoster.Application.Interfaces;
 using TelegramPoster.Application.Interfaces.Repositories;
 using TelegramPoster.Application.Models.Registration;
+using TelegramPoster.Application.Validator;
 using TelegramPoster.Auth;
 using TelegramPoster.Auth.Interface;
 using TelegramPoster.Domain.Entity;
@@ -18,10 +19,6 @@ public class UserService(
     {
         var resultGenerate = passwordHasher.Generate(registrationModel.Password);
 
-        await userRepository.GetByEmailAsync(registrationModel.Email);
-        await userRepository.GetByUserNameAsync(registrationModel.UserName);
-        await userRepository.GetByPhoneAsync(registrationModel.PhoneNumber);
-
         await userRepository.AddAsync(new User
         {
             Id = guidManager.NewGuid(),
@@ -34,16 +31,13 @@ public class UserService(
 
     public async Task<string> Login(LoginForm loginForm)
     {
-        var user = await userRepository.GetByUserNameAsync(loginForm.UserNameOrEmail);
-        user ??= await userRepository.GetByEmailAsync(loginForm.UserNameOrEmail);
-        if (user?.PasswordHash == null)
-            throw new InvalidOperationException("Invalid user credentials.");
-        var result = passwordHasher.CheckPassword(loginForm.Password, user.PasswordHash);
+        var user = await userRepository.CheckUserAsync(loginForm.UserNameOrEmail);
+        user.AssertFound();
 
-        if (!result)
-            throw new InvalidOperationException("Failed to login");
+        var result = passwordHasher.CheckPassword(loginForm.Password, user!.PasswordHash);
 
-        var token = jwtProvider.GenerateToken(new TokenServiceBuildTokenPayload { UserId = user.Id });
-        return token;
+        return !result
+            ? throw new InvalidOperationException("Failed to login")
+            : jwtProvider.GenerateToken(new TokenServiceBuildTokenPayload { UserId = user.Id });
     }
 }
