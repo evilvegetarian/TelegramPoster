@@ -25,6 +25,17 @@ public class UserRepository(ISqlConnectionFactory connection) : IUserRepository
         using var db = connection.Create();
         return await db.QueryFirstOrDefaultAsync<User>(sql, new { UserName = userName });
     }
+    public async Task<User?> CheckUserAsync(string userName)
+    {
+        const string sql = """
+                           SELECT *
+                           FROM "User" u
+                           WHERE LOWER(u."UserName") = LOWER(@UserName) 
+                           OR LOWER(u."Email") = LOWER(@UserName);
+                           """;
+        using var db = connection.Create();
+        return await db.QueryFirstOrDefaultAsync<User>(sql, new { UserName = userName });
+    }
 
     public async Task<User?> GetByPhoneAsync(string phone)
     {

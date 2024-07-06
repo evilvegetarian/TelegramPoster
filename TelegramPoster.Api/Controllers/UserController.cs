@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TelegramPoster.Application.Models.Registration;
 using TelegramPoster.Application.Services.UserServices;
+using TelegramPoster.Application.Validator.User;
 
 namespace TelegramPoster.Api.Controllers;
 
@@ -8,16 +9,20 @@ namespace TelegramPoster.Api.Controllers;
 [Route("api/[controller]")]
 public class UserController(
     IUserService userService,
-    IHttpContextAccessor httpContextAccessor)
+    IHttpContextAccessor httpContextAccessor,
+    IUserValidator userValidator)
     : ControllerBase
 {
-
-
     [HttpPost(nameof(Register))]
     public async Task<IActionResult> Register([FromBody] RegistrationModel registrationModel)
     {
-        await userService.Register(registrationModel);
-        return Ok();
+        await userValidator.RegisterValidate(registrationModel, ModelState);
+        if (ModelState.IsValid)
+        {
+            await userService.Register(registrationModel);
+            return Ok();
+        }
+        return BadRequest(ModelState);
     }
 
     [HttpPost(nameof(Login))]
