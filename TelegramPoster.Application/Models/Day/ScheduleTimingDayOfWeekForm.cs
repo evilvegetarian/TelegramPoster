@@ -2,7 +2,7 @@
 
 namespace TelegramPoster.Application.Models.Day;
 
-public class DayOfWeekScheduleForm
+public class ScheduleTimingDayOfWeekForm
 {
     [Required]
     public required Guid ScheduleId { get; set; }
@@ -16,16 +16,6 @@ public class DayOfWeekForm
     [Required]
     public required DayOfWeek DayOfWeekPosting { get; set; }
 
-    [Required]
-    public required bool IsInterval { get; set; }
-
-    public DayOfWeekScheduleIntervalForm? CreateDayScheduleIntervalForms { get; set; }
-
-    public List<TimeOnly> TimesPosting { get; set; } = [];
-}
-
-public class DayOfWeekScheduleIntervalForm
-{
     [Required]
     public required TimeOnly StartPosting { get; set; }
 

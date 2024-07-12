@@ -9,7 +9,7 @@ namespace TelegramPoster.Api.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class DayScheduleController(IDayService dayService, IDayValidator dayValidator) : ControllerBase
+public class ScheduleTimingController(IDayService dayService, IScheduleTimingValidator dayValidator) : ControllerBase
 {
     /// <summary>
     /// Возвращаются дни недели
@@ -27,10 +27,10 @@ public class DayScheduleController(IDayService dayService, IDayValidator dayVali
     /// </summary>
     /// <param name="dayOfWeekSchedule"></param>
     /// <returns></returns>
-    [HttpPost(nameof(DayOfWeekSchedule))]
-    public async Task<IActionResult> DayOfWeekSchedule([FromBody] DayOfWeekScheduleForm dayOfWeekSchedule)
+    [HttpPost(nameof(ScheduleTimingDayOfWeek))]
+    public async Task<IActionResult> ScheduleTimingDayOfWeek([FromBody] ScheduleTimingDayOfWeekForm dayOfWeekSchedule)
     {
-        var resultValidate = await dayValidator.DayOfWeekScheduleFormValidate(dayOfWeekSchedule, ModelState);
+        await dayValidator.DayOfWeekScheduleFormValidate(dayOfWeekSchedule, ModelState);
         if (ModelState.IsValid)
         {
             await dayService.CreateForDayOfWeek(dayOfWeekSchedule);

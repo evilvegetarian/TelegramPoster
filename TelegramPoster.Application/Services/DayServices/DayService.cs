@@ -20,7 +20,7 @@ public class DayService : IDayService
         this.timePostingRepository = timePostingRepository;
     }
 
-    public async Task CreateForDayOfWeek(DayOfWeekScheduleForm createDayOfWeekSchedule)
+    public async Task CreateForDayOfWeek(ScheduleTimingDayOfWeekForm createDayOfWeekSchedule)
     {
         var days = new List<Day>();
         var timePostings = new List<TimePosting>();
@@ -43,39 +43,19 @@ public class DayService : IDayService
                 days.Add(day);
             }
 
-            if (dayForm.IsInterval)
+            var i = dayForm.StartPosting;
+            while (i <= dayForm.EndPosting)
             {
-                var dayTime = dayForm.CreateDayScheduleIntervalForms!;
-
-                var i = dayTime.StartPosting;
-                while (i <= dayTime.EndPosting)
+                if (!timing.Exists(t => t.Time == i))
                 {
-                    if (!timing.Exists(t => t.Time == i))
+                    timePostings.Add(new TimePosting
                     {
-                        timePostings.Add(new TimePosting
-                        {
-                            Id = guidManager.NewGuid(),
-                            DayId = day.Id,
-                            Time = i
-                        });
-                    }
-                    i = i.AddMinutes(dayTime.Interval);
+                        Id = guidManager.NewGuid(),
+                        DayId = day.Id,
+                        Time = i
+                    });
                 }
-            }
-            else
-            {
-                foreach (var dayTime in dayForm.TimesPosting)
-                {
-                    if (!timing.Exists(t => t.Time == dayTime))
-                    {
-                        timePostings.Add(new TimePosting
-                        {
-                            Id = guidManager.NewGuid(),
-                            DayId = day.Id,
-                            Time = dayTime
-                        });
-                    }
-                }
+                i = i.AddMinutes(dayForm.Interval);
             }
         }
 
