@@ -24,4 +24,14 @@ public class BotChannelRepository(ISqlConnectionFactory connection) : IBotChanne
         using var db = connection.Create();
         return (await db.QueryAsync<BotChannelLink>(sql, new { BotId = botId })).ToList();
     }
+
+    public async Task<List<BotChannelLink>> GetListByBotIdsAsync(IEnumerable<Guid> botIds)
+    {
+        const string sql = """
+                           SELECT * FROM "BotChannelLink"
+                           WHERE "BotId" = ANY(@BotIds)
+                           """;
+        using var db = connection.Create();
+        return (await db.QueryAsync<BotChannelLink>(sql, new { BotIds = botIds.ToList() })).ToList();
+    }
 }

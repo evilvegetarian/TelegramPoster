@@ -6,6 +6,7 @@ using TelegramPoster.Application;
 using TelegramPoster.Auth;
 using TelegramPoster.Persistence;
 using Utility;
+using static TelegramPoster.Application.Validator.ValidationExtensions;
 
 namespace TelegramPoster.Api;
 
@@ -15,7 +16,7 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        //var db = builder.Configuration.GetSection(nameof(DataBase)).Get<DataBase>();
+        var cors = builder.Configuration.GetSection(nameof(Cors)).Get<Cors>();
 
         builder.Services.AddSwaggerGen(options =>
         {
@@ -26,12 +27,26 @@ public class Program
         builder.Services.AddControllers();
         builder.Services.AddSwaggerGen();
         builder.Services.AddHealthChecks()
-        //    .AddNpgSql(connectionString: db!.ConnectionString, name: "npsql", tags: ["npsql"])
-            .AddUrlGroup(new Uri("http://example.com"), name: "Example URL", tags: ["Example"]);
+            .AddUrlGroup(new Uri(cors.Front), name: "Front", tags: ["Front"]);
 
         builder.WebHost.UseKestrel(opt =>
         {
             opt.AddServerHeader = false;
+        });
+
+        builder.Services.AddControllers(options =>
+        {
+            options.Filters.Add<HttpResponseExceptionFilter>();
+        });
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder =>
+            {
+                builder.WithOrigins(cors.Front)
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
         });
 
         //ext
@@ -42,8 +57,6 @@ public class Program
         builder.Services.AddUtility();
 
         var app = builder.Build();
-
-        //app.UseExceptionHandler("/api/ApiError");
 
         app.Use(async (context, next) =>
         {
@@ -74,14 +87,15 @@ public class Program
             Secure = CookieSecurePolicy.Always
         });
 
-        app.UseCors(x =>
-        {
-            x.WithOrigins("http://localhost:5173");
-        });
+        app.UseCors();
 
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
         app.Run();
     }
+}
+public class Cors
+{
+    public required string Front { get; set; }
 }

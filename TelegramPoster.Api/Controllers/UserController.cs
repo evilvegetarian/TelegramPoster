@@ -36,6 +36,6 @@ public class UserController(
             SameSite = SameSiteMode.Strict
         };
         httpContextAccessor.HttpContext?.Response.Cookies.Append("cock-cookies", token, cookieOptions);
-        return Ok();
+        return Ok(token);
     }
 }

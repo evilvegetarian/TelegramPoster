@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TelegramPoster.Application.Models.Day;
 using TelegramPoster.Application.Services.DayServices;
 using TelegramPoster.Application.Validator.Day;
 
 namespace TelegramPoster.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class DayScheduleController(IDayService dayService, IDayValidator dayValidator) : ControllerBase

@@ -52,7 +52,7 @@ public class DayRepository(ISqlConnectionFactory connection) : IDayRepository
         const string sql = """
                            SELECT * 
                            FROM "Day" day
-                           JOIN "TimePosting" tp on tp."DayId" =day."Id" 
+                           JOIN "TimePosting" tp on tp."DayId" = day."Id" 
                            WHERE day."ScheduleId"=@ScheduleId
                            """;
         using var db = connection.Create();

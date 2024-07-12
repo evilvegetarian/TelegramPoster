@@ -37,26 +37,9 @@ public class TelegramController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet(nameof(TelegramBots))]
+    [Produces(typeof(List<TelegramBotsModelView>))]
     public async Task<IActionResult> TelegramBots()
     {
         return Ok(await telegramService.GetTelegramBots());
-    }
-
-    [HttpGet(nameof(Channels))]
-    public async Task<IActionResult> Channels(Guid botId)
-    {
-        return Ok(await telegramService.GetChannelsAsync(botId));
-    }
-
-    [HttpPost(nameof(Channel))]
-    public async Task<IActionResult> Channel(ChannelForm channelForm)
-    {
-        var result = await telegramBotValidator.AddChannelValidate(channelForm, ModelState);
-        if (ModelState.IsValid)
-        {
-            await telegramService.AddChannelAsync(result, channelForm);
-            return Ok();
-        }
-        return BadRequest(ModelState);
     }
 }

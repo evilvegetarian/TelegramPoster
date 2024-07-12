@@ -52,26 +52,6 @@ public class TelegramBotValidator : ITelegramBotValidator
         return resultValidate;
     }
 
-    public async Task<AddChannelValidateResult> AddChannelValidate(ChannelForm channelForm, ModelStateDictionary modelState)
-    {
-        var channelResult = new AddChannelValidateResult();
-
-        var bot = await botRepository.GetAsync(channelForm.BotId);
-
-        if (bot.AssertFound(modelState))
-        {
-            var telegramBot = new TelegramBotClient(cryptoAES.Decrypt(bot!.ApiTelegram));
-            var chat = await telegramBot.GetChatAsync(channelForm.Channel.ConvertToTelegramHandle());
-            channelResult.ChannelId = chat.Id;
-        }
-        channelResult.IsValid = modelState.IsValid;
-        return channelResult;
-    }
-
-    public async Task TelegramBotVaildate(string apiTelegram, ModelStateDictionary modelState)
-    {
-
-    }
 }
 
 public class ApiTelegramValidateResult
@@ -82,11 +62,6 @@ public class ApiTelegramValidateResult
     public bool IsValid { get; set; }
 }
 
-public class AddChannelValidateResult
-{
-    public long ChannelId { get; set; }
-    public bool IsValid { get; set; }
-}
 
 public static class TelegramChanelExtension
 {
