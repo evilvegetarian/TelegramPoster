@@ -36,7 +36,7 @@ public class ChannelService : IChannelService
         }).ToList();
     }
 
-    public async Task AddChannelAsync(AddChannelValidateResult result, ChannelForm channelForm)
+    public async Task AddChannelAsync(AddChannelValidateResult result, ChannelCreateRequestForm channelForm)
     {
         var channelBot = new BotChannelLink
         {

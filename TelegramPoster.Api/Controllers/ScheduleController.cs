@@ -11,7 +11,7 @@ namespace TelegramPoster.Api.Controllers;
 public class ScheduleController(IScheduleService scheduleService) : ControllerBase
 {
     [HttpPost(nameof(Schedule))]
-    public async Task<IActionResult> Schedule([FromBody] ScheduleDto scheduleDto)
+    public async Task<IActionResult> Schedule([FromBody] ScheduleCreateRequestForm scheduleDto)
     {
         await scheduleService.CreateAsync(scheduleDto);
         return Ok();

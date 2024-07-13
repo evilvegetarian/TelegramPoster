@@ -18,7 +18,7 @@ public class ChannelValidator : IChannelValidator
         this.botRepository = botRepository;
     }
 
-    public async Task<AddChannelValidateResult> AddChannelValidate(ChannelForm channelForm, ModelStateDictionary modelState)
+    public async Task<AddChannelValidateResult> AddChannelValidate(ChannelCreateRequestForm channelForm, ModelStateDictionary modelState)
     {
         var channelResult = new AddChannelValidateResult();
 

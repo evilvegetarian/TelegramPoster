@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using TelegramPoster.Application;
 using TelegramPoster.Auth;
 using TelegramPoster.Persistence;

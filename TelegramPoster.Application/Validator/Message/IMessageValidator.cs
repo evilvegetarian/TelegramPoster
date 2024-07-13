@@ -5,5 +5,5 @@ namespace TelegramPoster.Application.Validator.Message;
 
 public interface IMessageValidator
 {
-    Task<MessagesFromFilesFormResultValidate> MessagesFromFilesFormValidator(MessagesFromFilesForm messagesFromFilesForm, ModelStateDictionary modelState);
+    Task<MessagesFromFilesFormResultValidate> MessagesFromFilesFormValidator(MessagesFromFilesRequestForm messagesFromFilesForm, ModelStateDictionary modelState);
 }

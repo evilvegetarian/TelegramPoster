@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using TelegramPoster.Application.Models.Day;
+using TelegramPoster.Application.Models.ScheduleTiming;
 
 namespace TelegramPoster.Application.Validator.Day;
 
 public interface IScheduleTimingValidator
 {
-    Task<bool> DayOfWeekScheduleFormValidate(ScheduleTimingDayOfWeekForm dayOfWeekScheduleForm, ModelStateDictionary modelState);
+    Task<bool> DayOfWeekScheduleFormValidate(ScheduleTimingDayOfWeekRequestForm dayOfWeekScheduleForm, ModelStateDictionary modelState);
 }

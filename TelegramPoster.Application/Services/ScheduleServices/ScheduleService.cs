@@ -12,7 +12,7 @@ public class ScheduleService(
     ICurrentUserProvider currentUserProvider)
     : IScheduleService
 {
-    public async Task CreateAsync(ScheduleDto scheduleDto)
+    public async Task CreateAsync(ScheduleCreateRequestForm scheduleDto)
     {
         await scheduleRepository.AddAsync(new Schedule
         {
@@ -24,11 +24,11 @@ public class ScheduleService(
         });
     }
 
-    public async Task<List<ScheduleView>> GetAllAsync()
+    public async Task<List<ScheduleResponseModel>> GetAllAsync()
     {
         var currentUserId = currentUserProvider.Current().UserId;
         var scheduleList = await scheduleRepository.GetListByUserIdAsync(currentUserId);
-        return scheduleList.Select(x => new ScheduleView
+        return scheduleList.Select(x => new ScheduleResponseModel
         {
             Id = x.Id,
             Name = x.Name

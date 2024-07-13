@@ -1,7 +1,6 @@
 ﻿using TelegramPoster.Application.Interfaces;
 using TelegramPoster.Application.Models.TelegramBot;
 using TelegramPoster.Application.Validator.TelegramBot;
-using TelegramPoster.Auth;
 using TelegramPoster.Auth.Interface;
 using TelegramPoster.Domain.Entity;
 using TelegramPoster.Domain.Enum;
@@ -42,13 +41,13 @@ public class TelegramService : ITelegramService
         await telegramBotRepository.AddAsync(telegramBot);
     }
 
-    public async Task<List<TelegramBotsModelView>> GetTelegramBots()
+    public async Task<List<TelegramBotsResponseModel>> GetTelegramBots()
     {
         var userId = currentUserProvider.Current().UserId;
 
         var allBotUser = await telegramBotRepository.GetByUserIdAsync(userId);
 
-        return allBotUser.Select(x => new TelegramBotsModelView
+        return allBotUser.Select(x => new TelegramBotsResponseModel
         {
             Id = x.Id,
             NameBot = x.NameBot,

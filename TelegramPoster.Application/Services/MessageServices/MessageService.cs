@@ -41,7 +41,7 @@ public class MessageService : IMessageService
     /// <summary>
     ///     Метод принимает сколько угодно медиафайлов и делает из них по одному сообщению
     /// </summary>
-    public async Task GenerateOneMessagesFromFiles(MessagesFromFilesForm messagesFromFilesForm, MessagesFromFilesFormResultValidate resultValidate)
+    public async Task GenerateOneMessagesFromFiles(MessagesFromFilesRequestForm messagesFromFilesForm, MessagesFromFilesFormResultValidate resultValidate)
     {
         var botClient = resultValidate.TelegramBot!;
 

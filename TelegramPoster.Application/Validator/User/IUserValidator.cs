@@ -4,5 +4,5 @@ using TelegramPoster.Application.Models.Registration;
 namespace TelegramPoster.Application.Validator.User;
 public interface IUserValidator
 {
-    Task RegisterValidate(RegistrationModel registrationModel, ModelStateDictionary modelState);
+    Task RegisterValidate(RegistrationRequestModel registrationModel, ModelStateDictionary modelState);
 }

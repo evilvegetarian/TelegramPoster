@@ -18,7 +18,7 @@ public class TelegramBotValidator : ITelegramBotValidator
         this.cryptoAES = cryptoAES;
     }
 
-    public async Task<ApiTelegramValidateResult> ApiTelegramValidate(ApiTelegramForm apiTelegramForm, ModelStateDictionary modelState)
+    public async Task<ApiTelegramValidateResult> ApiTelegramValidate(ApiTelegramCreateRequestForm apiTelegramForm, ModelStateDictionary modelState)
     {
         var resultValidate = new ApiTelegramValidateResult
         {
@@ -40,12 +40,12 @@ public class TelegramBotValidator : ITelegramBotValidator
 
             if (chatId == null)
             {
-                modelState.AddModelError(nameof(ApiTelegramForm.ApiTelegram), "Похоже что вы еще не запустили бота, нажмите старт или напишите, любое сообщение в боте");
+                modelState.AddModelError(nameof(ApiTelegramCreateRequestForm.ApiTelegram), "Похоже что вы еще не запустили бота, нажмите старт или напишите, любое сообщение в боте");
             }
         }
         catch (ApiRequestException e)
         {
-            modelState.AddModelError(nameof(ApiTelegramForm.ApiTelegram), $"Введенный api не работает, введите правильный api телеграмма. {e}");
+            modelState.AddModelError(nameof(ApiTelegramCreateRequestForm.ApiTelegram), $"Введенный api не работает, введите правильный api телеграмма. {e}");
         }
 
         resultValidate.IsValid = modelState.IsValid;

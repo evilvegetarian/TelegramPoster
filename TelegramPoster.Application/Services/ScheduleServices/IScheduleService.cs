@@ -4,6 +4,6 @@ namespace TelegramPoster.Application.Services.ScheduleServices;
 
 public interface IScheduleService
 {
-    Task CreateAsync(ScheduleDto scheduleDto);
-    Task<List<ScheduleView>> GetAllAsync();
+    Task CreateAsync(ScheduleCreateRequestForm scheduleDto);
+    Task<List<ScheduleResponseModel>> GetAllAsync();
 }

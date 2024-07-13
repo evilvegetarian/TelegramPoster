@@ -1,17 +1,18 @@
 ﻿using TelegramPoster.Application.Interfaces;
 using TelegramPoster.Application.Interfaces.Repositories;
-using TelegramPoster.Application.Models.Day;
+using TelegramPoster.Application.Models.ScheduleTiming;
+using TelegramPoster.Application.Validator;
 using TelegramPoster.Domain.Entity;
 
-namespace TelegramPoster.Application.Services.DayServices;
+namespace TelegramPoster.Application.Services.ScheduleTimingServices;
 
-public class DayService : IDayService
+public class ScheduleTimingService : IScheduleTimingService
 {
     private readonly IDayRepository dayRepository;
     private readonly IGuidManager guidManager;
     private readonly ITimePostingRepository timePostingRepository;
 
-    public DayService(IGuidManager guidManager,
+    public ScheduleTimingService(IGuidManager guidManager,
         IDayRepository dayRepository,
         ITimePostingRepository timePostingRepository)
     {
@@ -20,7 +21,7 @@ public class DayService : IDayService
         this.timePostingRepository = timePostingRepository;
     }
 
-    public async Task CreateForDayOfWeek(ScheduleTimingDayOfWeekForm createDayOfWeekSchedule)
+    public async Task CreateForDayOfWeek(ScheduleTimingDayOfWeekRequestForm createDayOfWeekSchedule)
     {
         var days = new List<Day>();
         var timePostings = new List<TimePosting>();
@@ -63,11 +64,27 @@ public class DayService : IDayService
         await timePostingRepository.AddListAsync(timePostings);
     }
 
-    public List<DayOfWeekViewModel> GetAllDayOfWeek()
+    public List<DayOfWeekResponseModel> GetAllDayOfWeek()
     {
         return Enum.GetValues(typeof(DayOfWeek))
             .Cast<DayOfWeek>()
-            .Select(x => new DayOfWeekViewModel((int)x, x.ToString()))
+            .Select(x => new DayOfWeekResponseModel((int)x, x.ToString()))
             .ToList();
+    }
+
+    public async Task<ScheduleTimingResponseModel?> GetDayOfWeekTiming(Guid scheduleId)
+    {
+        var timing = await dayRepository.GetListWithTimeByScheduleIdAsync(scheduleId);
+        timing.AssertFound();
+        return timing.GroupBy(x => x.ScheduleId)
+                      .Select(g => new ScheduleTimingResponseModel
+                      {
+                          DayOfWeekModels = g.Select(day => new ScheduleTimingDayOfWeekResponseModel
+                          {
+                              DayOfWeekPosting = day.DayOfWeek!.Value,
+                              TimePosting = day.TimePostings.Select(x => x.Time).ToList(),
+                          }).ToList()
+
+                      }).FirstOrDefault();
     }
 }

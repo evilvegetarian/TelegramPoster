@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace TelegramPoster.Application.Models.Registration;
 
-public record LoginForm
+public record LoginRequestForm
 {
     [Required]
     [MinLength(4, ErrorMessage = "UserName must have more than 4 elements or equal 4")]

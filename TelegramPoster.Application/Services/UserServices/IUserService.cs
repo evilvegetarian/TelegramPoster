@@ -4,6 +4,6 @@ namespace TelegramPoster.Application.Services.UserServices;
 
 public interface IUserService
 {
-    Task<string> Login(LoginForm loginForm);
-    Task Register(RegistrationModel registrationModel);
+    Task<string> Login(LoginRequestForm loginForm);
+    Task Register(RegistrationRequestModel registrationModel);
 }

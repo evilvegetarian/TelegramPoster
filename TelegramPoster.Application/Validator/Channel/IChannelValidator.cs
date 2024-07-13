@@ -5,5 +5,5 @@ namespace TelegramPoster.Application.Validator.Channel;
 
 public interface IChannelValidator
 {
-    Task<AddChannelValidateResult> AddChannelValidate(ChannelForm channelForm, ModelStateDictionary modelState);
+    Task<AddChannelValidateResult> AddChannelValidate(ChannelCreateRequestForm channelForm, ModelStateDictionary modelState);
 }

@@ -1,6 +1,6 @@
 ﻿namespace TelegramPoster.Application.Models.Schedule;
 
-public class ScheduleDto
+public class ScheduleCreateRequestForm
 {
     public required string Name { get; init; }
     public required long ChannelId { get; init; }

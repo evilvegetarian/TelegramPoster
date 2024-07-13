@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TelegramPoster.Application.Models.Day;
-using TelegramPoster.Application.Services.DayServices;
+using System.ComponentModel.DataAnnotations;
+using TelegramPoster.Application.Models.ScheduleTiming;
+using TelegramPoster.Application.Services.ScheduleTimingServices;
 using TelegramPoster.Application.Validator.Day;
 
 namespace TelegramPoster.Api.Controllers;
@@ -9,7 +10,7 @@ namespace TelegramPoster.Api.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class ScheduleTimingController(IDayService dayService, IScheduleTimingValidator dayValidator) : ControllerBase
+public class ScheduleTimingController(IScheduleTimingService scheduleTimingService, IScheduleTimingValidator dayValidator) : ControllerBase
 {
     /// <summary>
     /// Возвращаются дни недели
@@ -18,7 +19,7 @@ public class ScheduleTimingController(IDayService dayService, IScheduleTimingVal
     [HttpGet(nameof(DayOfWeeks))]
     public IActionResult DayOfWeeks()
     {
-        var model = dayService.GetAllDayOfWeek();
+        var model = scheduleTimingService.GetAllDayOfWeek();
         return Ok(model);
     }
 
@@ -28,14 +29,21 @@ public class ScheduleTimingController(IDayService dayService, IScheduleTimingVal
     /// <param name="dayOfWeekSchedule"></param>
     /// <returns></returns>
     [HttpPost(nameof(ScheduleTimingDayOfWeek))]
-    public async Task<IActionResult> ScheduleTimingDayOfWeek([FromBody] ScheduleTimingDayOfWeekForm dayOfWeekSchedule)
+    public async Task<IActionResult> ScheduleTimingDayOfWeek([FromBody] ScheduleTimingDayOfWeekRequestForm dayOfWeekSchedule)
     {
         await dayValidator.DayOfWeekScheduleFormValidate(dayOfWeekSchedule, ModelState);
         if (ModelState.IsValid)
         {
-            await dayService.CreateForDayOfWeek(dayOfWeekSchedule);
+            await scheduleTimingService.CreateForDayOfWeek(dayOfWeekSchedule);
             return Ok();
         }
         return BadRequest(ModelState);
+    }
+
+    [HttpGet(nameof(ScheduleTimingDayOfWeek))]
+    public async Task<IActionResult> ScheduleTimingDayOfWeek([Required] Guid scheduleId)
+    {
+        var response = await scheduleTimingService.GetDayOfWeekTiming(scheduleId);
+        return Ok(response);
     }
 }

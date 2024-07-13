@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using TelegramPoster.Application.Interfaces.Repositories;
-using TelegramPoster.Application.Models.Day;
+using TelegramPoster.Application.Models.ScheduleTiming;
 
 namespace TelegramPoster.Application.Validator.Day;
 
 public class ScheduleTimingValidator(IScheduleRepository scheduleRepository) : IScheduleTimingValidator
 {
-    public async Task<bool> DayOfWeekScheduleFormValidate(ScheduleTimingDayOfWeekForm dayOfWeekScheduleForm, ModelStateDictionary modelState)
+    public async Task<bool> DayOfWeekScheduleFormValidate(ScheduleTimingDayOfWeekRequestForm dayOfWeekScheduleForm, ModelStateDictionary modelState)
     {
         var schedule = await scheduleRepository.GetAsync(dayOfWeekScheduleForm.ScheduleId);
         if (schedule == null)

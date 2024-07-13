@@ -8,5 +8,5 @@ public interface IChannelService
 {
     Task<List<ChannelsViewModel>> GetChannelsAsync(Guid botId);
     Task<List<ChannelsBotModel>> GetChannelsBotAsync();
-    Task AddChannelAsync(AddChannelValidateResult result, ChannelForm channelForm);
+    Task AddChannelAsync(AddChannelValidateResult result, ChannelCreateRequestForm channelForm);
 }

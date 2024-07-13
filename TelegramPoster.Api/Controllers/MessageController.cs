@@ -22,7 +22,7 @@ public class MessageController : ControllerBase
 
     [RequestSizeLimit(int.MaxValue)]
     [HttpPost(nameof(OneMessagesFromFiles))]
-    public async Task<IActionResult> OneMessagesFromFiles(MessagesFromFilesForm messagesFromFilesForm)
+    public async Task<IActionResult> OneMessagesFromFiles(MessagesFromFilesRequestForm messagesFromFilesForm)
     {
         var resultValidate = await messageValidator.MessagesFromFilesFormValidator(messagesFromFilesForm, ModelState);
         if (ModelState.IsValid)

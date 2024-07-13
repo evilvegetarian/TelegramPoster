@@ -15,7 +15,7 @@ public class UserService(
     IGuidManager guidManager)
     : IUserService
 {
-    public async Task Register(RegistrationModel registrationModel)
+    public async Task Register(RegistrationRequestModel registrationModel)
     {
         var resultGenerate = passwordHasher.Generate(registrationModel.Password);
 
@@ -29,7 +29,7 @@ public class UserService(
         });
     }
 
-    public async Task<string> Login(LoginForm loginForm)
+    public async Task<string> Login(LoginRequestForm loginForm)
     {
         var user = await userRepository.CheckUserAsync(loginForm.UserNameOrEmail);
         user.AssertFound();

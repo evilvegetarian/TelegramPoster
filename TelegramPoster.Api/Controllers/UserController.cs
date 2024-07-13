@@ -14,7 +14,7 @@ public class UserController(
     : ControllerBase
 {
     [HttpPost(nameof(Register))]
-    public async Task<IActionResult> Register([FromBody] RegistrationModel registrationModel)
+    public async Task<IActionResult> Register([FromBody] RegistrationRequestModel registrationModel)
     {
         await userValidator.RegisterValidate(registrationModel, ModelState);
         if (ModelState.IsValid)
@@ -26,7 +26,7 @@ public class UserController(
     }
 
     [HttpPost(nameof(Login))]
-    public async Task<IActionResult> Login([FromBody] LoginForm loginForm)
+    public async Task<IActionResult> Login([FromBody] LoginRequestForm loginForm)
     {
         var token = await userService.Login(loginForm);
         var cookieOptions = new CookieOptions

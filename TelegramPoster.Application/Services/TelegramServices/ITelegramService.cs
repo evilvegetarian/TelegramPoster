@@ -7,5 +7,5 @@ namespace TelegramPoster.Application.Services.TelegramServices;
 public interface ITelegramService
 {
     Task AddTelegramBotAsync(ApiTelegramValidateResult apiTelegram);
-    Task<List<TelegramBotsModelView>> GetTelegramBots();
+    Task<List<TelegramBotsResponseModel>> GetTelegramBots();
 }

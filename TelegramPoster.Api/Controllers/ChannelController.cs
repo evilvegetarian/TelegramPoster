@@ -36,7 +36,7 @@ public class ChannelController : ControllerBase
     }
 
     [HttpPost(nameof(Channel))]
-    public async Task<IActionResult> Channel(ChannelForm channelForm)
+    public async Task<IActionResult> Channel(ChannelCreateRequestForm channelForm)
     {
         var result = await channelValidator.AddChannelValidate(channelForm, ModelState);
         if (ModelState.IsValid)

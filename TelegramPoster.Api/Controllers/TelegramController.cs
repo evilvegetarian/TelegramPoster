@@ -21,7 +21,7 @@ public class TelegramController : ControllerBase
     }
 
     [HttpPost(nameof(ApiTelegram))]
-    public async Task<IActionResult> ApiTelegram(ApiTelegramForm apiTelegramModel)
+    public async Task<IActionResult> ApiTelegram(ApiTelegramCreateRequestForm apiTelegramModel)
     {
         var resultValidate = await telegramBotValidator.ApiTelegramValidate(apiTelegramModel, ModelState);
         if (ModelState.IsValid)
@@ -37,7 +37,7 @@ public class TelegramController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet(nameof(TelegramBots))]
-    [Produces(typeof(List<TelegramBotsModelView>))]
+    [Produces(typeof(List<TelegramBotsResponseModel>))]
     public async Task<IActionResult> TelegramBots()
     {
         return Ok(await telegramService.GetTelegramBots());

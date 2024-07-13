@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Telegram.Bot;
-using Telegram.Bot.Types;
 using TelegramPoster.Application.Interfaces.Repositories;
 using TelegramPoster.Application.Models.Message;
 using TelegramPoster.Auth.Interface;
@@ -23,7 +22,7 @@ public class MessageValidator : IMessageValidator
         this.cryptoAES = cryptoAES;
     }
 
-    public async Task<MessagesFromFilesFormResultValidate> MessagesFromFilesFormValidator(MessagesFromFilesForm messagesFromFilesForm, ModelStateDictionary modelState)
+    public async Task<MessagesFromFilesFormResultValidate> MessagesFromFilesFormValidator(MessagesFromFilesRequestForm messagesFromFilesForm, ModelStateDictionary modelState)
     {
         var result = new MessagesFromFilesFormResultValidate();
         var schedule = await scheduleRepository.GetAsync(messagesFromFilesForm.ScheduleId);
