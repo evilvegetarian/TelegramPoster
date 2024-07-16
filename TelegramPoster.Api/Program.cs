@@ -84,7 +84,7 @@ public class Program
             HttpOnly = HttpOnlyPolicy.Always,
             Secure = CookieSecurePolicy.Always
         });
-        app.Services.SaveSwaggerJson();
+        //app.Services.SaveSwaggerJson();
         app.UseCors();
 
         app.UseAuthentication();
