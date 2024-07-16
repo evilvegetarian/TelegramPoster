@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  telegramposter.api:
+    image: ${DOCKER_REGISTRY-}telegramposterapi
+    build:
+      context: .
+      dockerfile: TelegramPoster.Api/Dockerfile
