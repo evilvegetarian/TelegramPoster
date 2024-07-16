@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Docker
 
 on:
   workflow_dispatch:
@@ -11,39 +11,43 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-
-    # Логин в Docker Hub перед пушем образа
+          
+    # Log in to Docker Hub before pushing the image
     - name: Log in to Docker Hub
       uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    # Сборка и пуш Docker образа
+    # Build and push Docker image
     - name: Build and push Docker image
       uses: docker/build-push-action@v2
       with:
+        context: .
+        file: TelegramPoster.Api/Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_REP }}:latest
 
+    # Copy docker-compose file to the server
     - name: Copy docker-compose file
       uses: appleboy/scp-action@master
       with:
         host: ${{ secrets.SERVER_IP }}
         username: ${{ secrets.SERVER_USER }}
-        key: ${{ secrets.SERVER_SSH_KEY }}
-        source: |
-          docker-compose.yml
-        target: "/root"
+        password: ${{ secrets.PASSWORD }}
+        source: docker-compose.yml
+        target: /root/
 
-    # Деплой на сервер
+    # Deploy on the server
     - name: Deploy on Server
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SERVER_IP }}
         username: ${{ secrets.SERVER_USER }}
-        key: ${{ secrets.SERVER_SSH_KEY }}
+        password: ${{ secrets.PASSWORD }}
         script: |
           cd /root
+          docker-compose down
           docker pull ${{ secrets.DOCKER_REP }}:latest
           docker-compose up -d
+          docker image prune -f
