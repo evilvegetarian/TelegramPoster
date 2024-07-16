@@ -84,7 +84,7 @@ public class Program
             HttpOnly = HttpOnlyPolicy.Always,
             Secure = CookieSecurePolicy.Always
         });
-
+        app.Services.SaveSwaggerJson();
         app.UseCors();
 
         app.UseAuthentication();
@@ -92,8 +92,4 @@ public class Program
         app.MapControllers();
         app.Run();
     }
-}
-public class Cors
-{
-    public required string Front { get; set; }
 }
