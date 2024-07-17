@@ -4,6 +4,7 @@ services:
   telegramposter.api:
     image: evilvegetarian/telegramposter
     ports:
-      - "8080:80"
+       - target: 8080
+         published: 10000
     volumes:
       - ./appsettings.json:/app/appsettings.json

@@ -64,11 +64,8 @@ public class Program
         app.UseHttpsRedirection();
         app.Services.AddPersistenceServiceProvider();
 
-        if (app.Environment.IsDevelopment())
-        {
             app.UseSwagger();
             app.UseSwaggerUI();
-        }
         app.MapHealthChecks("/health");
         app.MapHealthChecks("/health-npsql", new HealthCheckOptions
         {

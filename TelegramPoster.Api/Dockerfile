@@ -27,6 +27,6 @@ RUN dotnet publish "./TelegramPoster.Api.csproj" -c $BUILD_CONFIGURATION -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-# Add this line to copy the appsettings.json file
-COPY appsettings.json .
+# Adjust the path to appsettings.json file
+COPY /TelegramPoster.Api/appsettings.json .
 ENTRYPOINT ["dotnet", "TelegramPoster.Api.dll"]
