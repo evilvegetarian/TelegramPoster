@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using TelegramPoster.Application;
@@ -17,6 +18,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         var cors = builder.Configuration.GetSection(nameof(Cors)).Get<Cors>();
+        var buildConfiguration = builder.Configuration.GetSection(nameof(BuildConfiguration)).Get<BuildConfiguration>();
 
         builder.Services.AddSwaggerGen(options =>
         {
@@ -35,7 +37,16 @@ public class Program
                 Type = SecuritySchemeType.ApiKey
             });
             options.OperationFilter<SecurityRequirementsOperationFilter>();
+
+            options.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "My API",
+                Version = "v1",
+                Description = $"Build Number: {buildConfiguration.BuildNumber}"
+            });
         });
+
+
 
         builder.Services.AddHealthChecks()
             .AddUrlGroup(new Uri(cors.Front), name: "Front", tags: ["Front"]);

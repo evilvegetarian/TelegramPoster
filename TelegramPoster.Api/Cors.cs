@@ -2,5 +2,10 @@
 
 public class Cors
 {
-    public string Front { get; set; }
+    public required string Front { get; set; }
+}
+
+public class BuildConfiguration
+{
+    public required string BuildNumber { get; set; }
 }

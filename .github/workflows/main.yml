@@ -11,6 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+
+    - name: Replace file content
+      run: (Get-Content TelegramPoster.Api/appsettings.Development.json) -replace '##BuildNumber##', '${{ github.run_number }}' | Set-Content TelegramPoster.Api/appsettings.Development.json
+      shell: pwsh
+
+    - name: Replace file content
+      run: (Get-Content docker-compose.yml) -replace '##BuildNumber##', '${{ github.run_number }}' | Set-Content docker-compose.yml
+      shell: pwsh
           
     # Log in to Docker Hub before pushing the image
     - name: Log in to Docker Hub
@@ -26,7 +34,7 @@ jobs:
         context: .
         file: TelegramPoster.Api/Dockerfile
         push: true
-        tags: ${{ secrets.DOCKER_REP }}:latest
+        tags: ${{ secrets.DOCKER_REP }}:${{ github.run_number }}
 
     # Copy docker-compose file to the server
     - name: Copy docker-compose file
@@ -48,6 +56,7 @@ jobs:
         script: |
           cd /root
           docker-compose down
-          docker pull ${{ secrets.DOCKER_REP }}:latest
+          docker pull ${{ secrets.DOCKER_REP }}:${{ github.run_number }}
+          
           docker-compose up -d
           docker image prune -f
