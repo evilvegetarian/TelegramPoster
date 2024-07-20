@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TelegramPoster.Application.Services.ScheduleTimingServices;
+namespace TelegramPoster.Application.Models.ScheduleTiming;
 
 public class ScheduleTimingResponseModel
 {

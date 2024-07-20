@@ -41,6 +41,7 @@ public class ScheduleTimingController(IScheduleTimingService scheduleTimingServi
     }
 
     [HttpGet(nameof(ScheduleTimingDayOfWeek))]
+    [Produces(typeof(ScheduleTimingResponseModel))]
     public async Task<IActionResult> ScheduleTimingDayOfWeek([Required] Guid scheduleId)
     {
         var response = await scheduleTimingService.GetDayOfWeekTiming(scheduleId);

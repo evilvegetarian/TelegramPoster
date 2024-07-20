@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 using TelegramPoster.Application;
 using TelegramPoster.Auth;
 using TelegramPoster.Persistence;
@@ -23,7 +25,18 @@ public class Program
 
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddControllers();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+            {
+                Description = "Standard Authorization Reader using the Bearer scheme (\"Bearer {token} \")",
+                In = ParameterLocation.Header,
+                Name = "Authorization",
+                Type = SecuritySchemeType.ApiKey
+            });
+            options.OperationFilter<SecurityRequirementsOperationFilter>();
+        });
+
         builder.Services.AddHealthChecks()
             .AddUrlGroup(new Uri(cors.Front), name: "Front", tags: ["Front"]);
 
@@ -64,8 +77,9 @@ public class Program
         app.UseHttpsRedirection();
         app.Services.AddPersistenceServiceProvider();
 
-            app.UseSwagger();
-            app.UseSwaggerUI();
+        app.UseSwagger();
+        app.UseSwaggerUI();
+
         app.MapHealthChecks("/health");
         app.MapHealthChecks("/health-npsql", new HealthCheckOptions
         {
