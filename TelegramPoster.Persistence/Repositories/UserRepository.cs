@@ -6,6 +6,16 @@ namespace TelegramPoster.Persistence.Repositories;
 
 public class UserRepository(ISqlConnectionFactory connection) : IUserRepository
 {
+    public async Task<User?> GetAsync(Guid id)
+    {
+        const string sql = """
+                           SELECT * FROM "User"
+                           Where "Id" = @Id
+                           """;
+        using var db = connection.Create();
+        return await db.QueryFirstOrDefaultAsync<User>(sql, new { Id = id });
+    }
+
     public async Task<User?> GetByEmailAsync(string email)
     {
         const string sql = """
@@ -25,12 +35,13 @@ public class UserRepository(ISqlConnectionFactory connection) : IUserRepository
         using var db = connection.Create();
         return await db.QueryFirstOrDefaultAsync<User>(sql, new { UserName = userName });
     }
+
     public async Task<User?> CheckUserAsync(string userName)
     {
         const string sql = """
                            SELECT *
                            FROM "User" u
-                           WHERE LOWER(u."UserName") = LOWER(@UserName) 
+                           WHERE LOWER(u."UserName") = LOWER(@UserName)
                            OR LOWER(u."Email") = LOWER(@UserName);
                            """;
         using var db = connection.Create();
@@ -70,17 +81,40 @@ public class UserRepository(ISqlConnectionFactory connection) : IUserRepository
         const string sql = """
                            UPDATE "User"
                            SET "UserName"=@UserName,
+                               "PhoneNumber"=@PhoneNumber,
                                "TelegramUserName"=@TelegramUserName,
-                               "PhoneNumber"=@PhoneNumber
+                               "Email"=@Email,
+                               "RefreshToken"=@RefreshToken,
+                               "RefreshTokenExpiryTime"=@RefreshTokenExpiryTime
                            WHERE "Id"=@Id
                            """;
         using var db = connection.Create();
         await db.ExecuteAsync(sql, new
         {
+            user.Id,
             user.UserName,
             user.TelegramUserName,
             user.PhoneNumber,
-            user.Id
+            user.Email,
+            user.RefreshToken,
+            user.RefreshTokenExpiryTime
+        });
+    }
+
+    public async Task UpdateRefreshAsync(Guid id, string refreshToken, DateTime refreshTokenExpiryTime)
+    {
+        const string sql = """
+                           UPDATE "User"
+                           SET "RefreshToken" = @RefreshToken,
+                               "RefreshTokenExpiryTime" = @RefreshTokenExpiryTime
+                           WHERE "Id"=@Id
+                           """;
+        using var db = connection.Create();
+        await db.ExecuteAsync(sql, new
+        {
+            Id = id,
+            RefreshToken = refreshToken,
+            RefreshTokenExpiryTime = refreshTokenExpiryTime
         });
     }
 }

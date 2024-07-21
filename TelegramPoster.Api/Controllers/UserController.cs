@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TelegramPoster.Application.Models;
 using TelegramPoster.Application.Models.Registration;
 using TelegramPoster.Application.Services.UserServices;
 using TelegramPoster.Application.Validator.User;
@@ -22,20 +23,37 @@ public class UserController(
             await userService.Register(registrationModel);
             return Ok();
         }
+
         return BadRequest(ModelState);
     }
 
     [HttpPost(nameof(Login))]
+    [Produces(typeof(LoginResponseModel))]
     public async Task<IActionResult> Login([FromBody] LoginRequestForm loginForm)
     {
-        var token = await userService.Login(loginForm);
-        var cookieOptions = new CookieOptions
+        var login = await userService.Login(loginForm);
+        AddCookie(login.AccessToken);
+        return Ok(login);
+    }
+
+
+    [HttpPost(nameof(RefreshToken))]
+    [Produces(typeof(RefreshResponseModel))]
+    public async Task<IActionResult> RefreshToken(RefreshRequestForm form)
+    {
+        var refresh = await userService.RefreshToken(form);
+        AddCookie(refresh.AccessToken);
+        return Ok(refresh);
+    }
+
+    private void AddCookie(string accessToken)
+    {
+        CookieOptions cookieOptions = new()
         {
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.Strict
         };
-        httpContextAccessor.HttpContext?.Response.Cookies.Append("cock-cookies", token, cookieOptions);
-        return Ok(token);
+        httpContextAccessor.HttpContext?.Response.Cookies.Append("cock-cookies", accessToken, cookieOptions);
     }
 }

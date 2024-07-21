@@ -1,9 +1,11 @@
-﻿using TelegramPoster.Application.Models.Registration;
+﻿using TelegramPoster.Application.Models;
+using TelegramPoster.Application.Models.Registration;
 
 namespace TelegramPoster.Application.Services.UserServices;
 
 public interface IUserService
 {
-    Task<string> Login(LoginRequestForm loginForm);
+    Task<LoginResponseModel> Login(LoginRequestForm loginForm);
+    Task<RefreshResponseModel> RefreshToken(RefreshRequestForm form);
     Task Register(RegistrationRequestModel registrationModel);
 }

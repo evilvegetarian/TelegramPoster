@@ -1,5 +1,6 @@
 ﻿using TelegramPoster.Application.Interfaces;
 using TelegramPoster.Application.Interfaces.Repositories;
+using TelegramPoster.Application.Models;
 using TelegramPoster.Application.Models.Registration;
 using TelegramPoster.Application.Validator;
 using TelegramPoster.Auth;
@@ -29,15 +30,46 @@ public class UserService(
         });
     }
 
-    public async Task<string> Login(LoginRequestForm loginForm)
+    public async Task<LoginResponseModel> Login(LoginRequestForm loginForm)
     {
         var user = await userRepository.CheckUserAsync(loginForm.UserNameOrEmail);
         user.AssertFound();
 
         var result = passwordHasher.CheckPassword(loginForm.Password, user!.PasswordHash);
+        var refreshToken = jwtProvider.GenerateRefreshToken();
+        
+        await userRepository.UpdateRefreshAsync(user.Id,refreshToken,DateTime.UtcNow.AddDays(7));
 
         return !result
             ? throw new InvalidOperationException("Failed to login")
-            : jwtProvider.GenerateToken(new TokenServiceBuildTokenPayload { UserId = user.Id });
+            : new LoginResponseModel
+            {
+                AccessToken = jwtProvider.GenerateToken(new TokenServiceBuildTokenPayload { UserId = user.Id }),
+                RefreshToken = refreshToken
+            };
+    }
+
+    public async Task<RefreshResponseModel> RefreshToken(RefreshRequestForm form)
+    {
+        var principal = jwtProvider.GetPrincipalFromExpiredToken(form.AccessToken);
+        var userId = principal.Claims.FirstOrDefault(c => c.Type == JwtClaimTypes.UserId)?.Value;
+
+        var user = await userRepository.GetAsync(Guid.Parse(userId));
+
+        if (user == null || user.RefreshToken != form.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+        {
+            throw new InvalidOperationException("Invalid refresh token");
+        }
+
+        var newAccessToken = jwtProvider.GenerateToken(new TokenServiceBuildTokenPayload { UserId = user.Id });
+        var newRefreshToken = jwtProvider.GenerateRefreshToken();
+
+        await userRepository.UpdateRefreshAsync(user.Id,newRefreshToken,DateTime.UtcNow.AddDays(7));
+
+        return new RefreshResponseModel
+        {
+            AccessToken = newAccessToken,
+            RefreshToken = newRefreshToken
+        };
     }
 }
