@@ -5,6 +5,6 @@ namespace TelegramPoster.Auth.Interface;
 public interface IJwtProvider
 {
     string GenerateRefreshToken();
-    string GenerateToken(TokenServiceBuildTokenPayload tokenPayload);
+    (string AccessToken, DateTime AcessExpireTime) GenerateToken(TokenServiceBuildTokenPayload tokenPayload);
     ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
 }

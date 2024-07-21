@@ -12,7 +12,7 @@ public class JwtProvider(IOptions<JwtOptions> options) : IJwtProvider
 {
     private readonly JwtOptions options = options.Value;
 
-    public string GenerateToken(TokenServiceBuildTokenPayload tokenPayload)
+    public (string AccessToken, DateTime AcessExpireTime) GenerateToken(TokenServiceBuildTokenPayload tokenPayload)
     {
         Claim[] claims =
         [
@@ -23,13 +23,13 @@ public class JwtProvider(IOptions<JwtOptions> options) : IJwtProvider
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.SecretKey)),
             SecurityAlgorithms.HmacSha256);
 
-
+        var expireTime = DateTime.UtcNow.AddHours(options.ExpiresHours);
         var token = new JwtSecurityToken(
             claims: claims,
-            expires: DateTime.UtcNow.AddHours(options.ExpiresHours),
+            expires: expireTime,
             signingCredentials: signingCredentials);
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return (new JwtSecurityTokenHandler().WriteToken(token), expireTime);
     }
 
     public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)

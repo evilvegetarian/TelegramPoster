@@ -12,7 +12,7 @@ public class UserValidator : IUserValidator
         this.userRepository = userRepository;
     }
 
-    public async Task RegisterValidate(RegistrationRequestModel registrationModel, ModelStateDictionary modelState)
+    public async Task RegisterValidate(RegistrationRequestForm registrationModel, ModelStateDictionary modelState)
     {
         var password = registrationModel.Password;
 

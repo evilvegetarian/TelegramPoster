@@ -15,7 +15,7 @@ public class UserController(
     : ControllerBase
 {
     [HttpPost(nameof(Register))]
-    public async Task<IActionResult> Register([FromBody] RegistrationRequestModel registrationModel)
+    public async Task<IActionResult> Register([FromBody] RegistrationRequestForm registrationModel)
     {
         await userValidator.RegisterValidate(registrationModel, ModelState);
         if (ModelState.IsValid)

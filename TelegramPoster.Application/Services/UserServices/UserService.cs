@@ -16,7 +16,7 @@ public class UserService(
     IGuidManager guidManager)
     : IUserService
 {
-    public async Task Register(RegistrationRequestModel registrationModel)
+    public async Task Register(RegistrationRequestForm registrationModel)
     {
         var resultGenerate = passwordHasher.Generate(registrationModel.Password);
 
@@ -37,15 +37,16 @@ public class UserService(
 
         var result = passwordHasher.CheckPassword(loginForm.Password, user!.PasswordHash);
         var refreshToken = jwtProvider.GenerateRefreshToken();
-        
-        await userRepository.UpdateRefreshAsync(user.Id,refreshToken,DateTime.UtcNow.AddDays(7));
 
+        await userRepository.UpdateRefreshAsync(user.Id,refreshToken,DateTime.UtcNow.AddDays(7));
+        var (newAccessToken, acessExpire) = jwtProvider.GenerateToken(new TokenServiceBuildTokenPayload { UserId = user.Id });
         return !result
             ? throw new InvalidOperationException("Failed to login")
             : new LoginResponseModel
             {
-                AccessToken = jwtProvider.GenerateToken(new TokenServiceBuildTokenPayload { UserId = user.Id }),
-                RefreshToken = refreshToken
+                AccessToken = newAccessToken,
+                RefreshToken = refreshToken,
+                AccessExpireTime=acessExpire,
             };
     }
 
@@ -61,7 +62,7 @@ public class UserService(
             throw new InvalidOperationException("Invalid refresh token");
         }
 
-        var newAccessToken = jwtProvider.GenerateToken(new TokenServiceBuildTokenPayload { UserId = user.Id });
+        var (newAccessToken, accessExpire) = jwtProvider.GenerateToken(new TokenServiceBuildTokenPayload { UserId = user.Id });
         var newRefreshToken = jwtProvider.GenerateRefreshToken();
 
         await userRepository.UpdateRefreshAsync(user.Id,newRefreshToken,DateTime.UtcNow.AddDays(7));
@@ -69,7 +70,8 @@ public class UserService(
         return new RefreshResponseModel
         {
             AccessToken = newAccessToken,
-            RefreshToken = newRefreshToken
+            RefreshToken = newRefreshToken,
+            AccessExpireTime= accessExpire
         };
     }
 }

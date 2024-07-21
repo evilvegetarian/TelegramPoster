@@ -7,5 +7,5 @@ public interface IUserService
 {
     Task<LoginResponseModel> Login(LoginRequestForm loginForm);
     Task<RefreshResponseModel> RefreshToken(RefreshRequestForm form);
-    Task Register(RegistrationRequestModel registrationModel);
+    Task Register(RegistrationRequestForm registrationModel);
 }

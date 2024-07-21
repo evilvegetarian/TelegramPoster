@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace TelegramPoster.Application.Models.Registration;
 
-public class RegistrationRequestModel
+public class RegistrationRequestForm
 {
     [EmailAddress]
     public required string Email { get; init; }
