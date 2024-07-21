@@ -60,6 +60,7 @@ public static class DependencyInjection
         var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
         runner.MigrateDown(targetVersion);
     }
+
     public class SqlTimeOnlyTypeHandler : SqlMapper.TypeHandler<TimeOnly>
     {
         public override void SetValue(IDbDataParameter parameter, TimeOnly time)

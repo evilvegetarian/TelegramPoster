@@ -12,8 +12,8 @@ public class User
     public string? TelegramUserName { get; set; }
     public string? RefreshToken { get; set; }
     public DateTime? RefreshTokenExpiryTime { get; set; }
-    
-    
+
+
     public List<Schedule> Schedules { get; set; } = [];
 }
 

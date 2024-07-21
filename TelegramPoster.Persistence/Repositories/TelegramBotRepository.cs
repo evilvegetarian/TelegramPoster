@@ -15,6 +15,7 @@ public class TelegramBotRepository(ISqlConnectionFactory connection) : ITelegram
         using var db = connection.Create();
         await db.ExecuteAsync(sql, telegramBot);
     }
+
     public async Task<List<TelegramBot>> GetAsync()
     {
         const string sql = """
@@ -53,6 +54,4 @@ public class TelegramBotRepository(ISqlConnectionFactory connection) : ITelegram
         using var db = connection.Create();
         return (await db.QueryAsync<TelegramBot>(sql, new { BotStatus = botStatus })).ToList();
     }
-
-
 }

@@ -41,17 +41,18 @@ public class MessageTelegramRepository(ISqlConnectionFactory connection) : IMess
     {
         const string sql = """
                        UPDATE "MessageTelegram"
-                       SET "Status" = @Status 
+                       SET "Status" = @Status
                        WHERE "Id" = ANY(@Ids)
                        """;
         using var db = connection.Create();
         await db.ExecuteAsync(sql, new { Status = status, Ids = ids.ToArray() });
     }
+
     public async Task UpdateStatusAsync(Guid id, MessageStatus status)
     {
         const string sql = """
                        UPDATE "MessageTelegram"
-                       SET "Status" = @Status 
+                       SET "Status" = @Status
                        WHERE "Id" = @Id
                        """;
         using var db = connection.Create();
@@ -111,11 +112,11 @@ public class MessageTelegramRepository(ISqlConnectionFactory connection) : IMess
         var sql = """
                  SELECT mt.*, ft.*, s.*, tb.*
                  FROM "MessageTelegram" mt
-                 INNER JOIN "FilesTelegram" ft ON ft."MessageTelegramId" = mt."Id" 
+                 INNER JOIN "FilesTelegram" ft ON ft."MessageTelegramId" = mt."Id"
                  LEFT JOIN "Schedule" s ON s."Id" = mt."ScheduleId"
                  LEFT JOIN "TelegramBot" tb ON tb."Id" = s."BotId"
-                 WHERE mt."Status" = @Status 
-                 AND mt."TimePosting"::time > @TimeFrom 
+                 WHERE mt."Status" = @Status
+                 AND mt."TimePosting"::time > @TimeFrom
                  AND mt."TimePosting"::time <= @TimeTo
                  """;
         using var db = connection.Create();
@@ -151,5 +152,4 @@ public class MessageTelegramRepository(ISqlConnectionFactory connection) : IMess
 
         return messageFileScheduleLookup.Values.ToList();
     }
-
 }

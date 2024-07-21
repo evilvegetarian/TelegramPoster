@@ -36,7 +36,6 @@ public class UserController(
         return Ok(login);
     }
 
-
     [HttpPost(nameof(RefreshToken))]
     [Produces(typeof(RefreshResponseModel))]
     public async Task<IActionResult> RefreshToken(RefreshRequestForm form)

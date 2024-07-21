@@ -15,6 +15,7 @@ public class CreateBotChannelLink : Migration
         Create.PrimaryKey("PK_BotChannelLink")
             .OnTable(nameof(BotChannelLink)).Columns(nameof(BotChannelLink.BotId), nameof(BotChannelLink.ChannelId));
     }
+
     public override void Down()
     {
         Delete.Table(nameof(BotChannelLink));

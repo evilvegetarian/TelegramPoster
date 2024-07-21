@@ -6,7 +6,7 @@ public class RefreshRequestForm
     public required string RefreshToken { get; init; }
 }
 
-public class RefreshResponseModel:LoginResponseModel
+public class RefreshResponseModel : LoginResponseModel
 {
 
 }

@@ -4,7 +4,7 @@ using TelegramPoster.Domain.Entity;
 namespace TelegramPoster.Persistence.Migrations;
 
 [Migration(6, $"Add Refresh Token in User")]
-public class AddRefreshToken :Migration
+public class AddRefreshToken : Migration
 {
     public override void Up()
     {

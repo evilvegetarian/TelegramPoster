@@ -50,9 +50,9 @@ public class DayRepository(ISqlConnectionFactory connection) : IDayRepository
     public async Task<List<Day>> GetListWithTimeByScheduleIdAsync(Guid scheduleId)
     {
         const string sql = """
-                           SELECT * 
+                           SELECT *
                            FROM "Day" day
-                           JOIN "TimePosting" tp on tp."DayId" = day."Id" 
+                           JOIN "TimePosting" tp on tp."DayId" = day."Id"
                            WHERE day."ScheduleId"=@ScheduleId
                            """;
         using var db = connection.Create();

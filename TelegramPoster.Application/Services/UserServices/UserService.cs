@@ -38,7 +38,7 @@ public class UserService(
         var result = passwordHasher.CheckPassword(loginForm.Password, user!.PasswordHash);
         var refreshToken = jwtProvider.GenerateRefreshToken();
 
-        await userRepository.UpdateRefreshAsync(user.Id,refreshToken,DateTime.UtcNow.AddDays(7));
+        await userRepository.UpdateRefreshAsync(user.Id, refreshToken, DateTime.UtcNow.AddDays(7));
         var (newAccessToken, acessExpire) = jwtProvider.GenerateToken(new TokenServiceBuildTokenPayload { UserId = user.Id });
         return !result
             ? throw new InvalidOperationException("Failed to login")
@@ -46,7 +46,7 @@ public class UserService(
             {
                 AccessToken = newAccessToken,
                 RefreshToken = refreshToken,
-                AccessExpireTime=acessExpire,
+                AccessExpireTime = acessExpire,
             };
     }
 
@@ -65,13 +65,13 @@ public class UserService(
         var (newAccessToken, accessExpire) = jwtProvider.GenerateToken(new TokenServiceBuildTokenPayload { UserId = user.Id });
         var newRefreshToken = jwtProvider.GenerateRefreshToken();
 
-        await userRepository.UpdateRefreshAsync(user.Id,newRefreshToken,DateTime.UtcNow.AddDays(7));
+        await userRepository.UpdateRefreshAsync(user.Id, newRefreshToken, DateTime.UtcNow.AddDays(7));
 
         return new RefreshResponseModel
         {
             AccessToken = newAccessToken,
             RefreshToken = newRefreshToken,
-            AccessExpireTime= accessExpire
+            AccessExpireTime = accessExpire
         };
     }
 }
