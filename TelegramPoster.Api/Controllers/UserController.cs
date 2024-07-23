@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using TelegramPoster.Application.Models;
 using TelegramPoster.Application.Models.Registration;
 using TelegramPoster.Application.Services.UserServices;
 using TelegramPoster.Application.Validator.User;
+using TelegramPoster.Auth;
 
 namespace TelegramPoster.Api.Controllers;
 
@@ -11,7 +13,8 @@ namespace TelegramPoster.Api.Controllers;
 public class UserController(
     IUserService userService,
     IHttpContextAccessor httpContextAccessor,
-    IUserValidator userValidator)
+    IUserValidator userValidator,
+    IOptions<BuildConfiguration> options)
     : ControllerBase
 {
     [HttpPost(nameof(Register))]
@@ -44,6 +47,15 @@ public class UserController(
         AddCookie(refresh.AccessToken);
         return Ok(refresh);
     }
+
+
+    [HttpGet(nameof(dddd))]
+    [Produces(typeof(string))]
+    public async Task<IActionResult> dddd()
+    {
+        return Ok(options.Value.BuildNumber);
+    }
+
 
     private void AddCookie(string accessToken)
     {

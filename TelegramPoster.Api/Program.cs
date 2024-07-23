@@ -18,6 +18,7 @@ public class Program
 
         var cors = builder.Configuration.GetSection(nameof(Cors)).Get<Cors>();
         var buildConfiguration = builder.Configuration.GetSection(nameof(BuildConfiguration)).Get<BuildConfiguration>();
+        builder.Services.Configure<BuildConfiguration>(builder.Configuration.GetSection(nameof(BuildConfiguration)));
 
         builder.Services.AddSwaggerGen(options =>
         {
