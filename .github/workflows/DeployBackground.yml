@@ -41,7 +41,7 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         password: ${{ secrets.PASSWORD }}
         script: |
-          scp -o StrictHostKeyChecking=no TelegramPoster.Background/docker-compose.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/root/TelegramPosterApp/TelegramBackground/docker-compose.yml
+          scp -o StrictHostKeyChecking=no /TelegramPoster.Background/docker-compose.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/root/TelegramPosterApp/TelegramBackground/docker-compose.yml
 
     # Deploy on the server
     - name: Deploy on Server
