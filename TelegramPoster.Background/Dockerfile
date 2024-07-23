@@ -27,4 +27,5 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 COPY /TelegramPoster.Background/appsettings.json .
+COPY /TelegramPoster.Background/docker-compose.yml .
 ENTRYPOINT ["dotnet", "TelegramPoster.Background.dll"]
