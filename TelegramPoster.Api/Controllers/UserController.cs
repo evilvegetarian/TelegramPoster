@@ -13,8 +13,7 @@ namespace TelegramPoster.Api.Controllers;
 public class UserController(
     IUserService userService,
     IHttpContextAccessor httpContextAccessor,
-    IUserValidator userValidator,
-    IOptions<BuildConfiguration> options)
+    IUserValidator userValidator)
     : ControllerBase
 {
     [HttpPost(nameof(Register))]
@@ -47,15 +46,6 @@ public class UserController(
         AddCookie(refresh.AccessToken);
         return Ok(refresh);
     }
-
-
-    [HttpGet(nameof(dddd))]
-    [Produces(typeof(string))]
-    public async Task<IActionResult> dddd()
-    {
-        return Ok(options.Value.BuildNumber);
-    }
-
 
     private void AddCookie(string accessToken)
     {
