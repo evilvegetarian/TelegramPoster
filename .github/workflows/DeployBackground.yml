@@ -13,7 +13,8 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Replace file content
-      run: (Get-Content TelegramPoster.Background/docker-compose.yml) -replace '##BuildNumber##', '${{ github.run_number }}' | Set-Content TelegramPoster.Background/docker-compose.yml
+      run: |
+        (Get-Content TelegramPoster.Background/docker-compose.yml) -replace '##BuildNumber##', '${{ github.run_number }}' | Set-Content TelegramPoster.Background/docker-compose.yml
       shell: pwsh
           
     # Log in to Docker Hub before pushing the image
@@ -39,8 +40,8 @@ jobs:
         host: ${{ secrets.SERVER_IP }}
         username: ${{ secrets.SERVER_USER }}
         password: ${{ secrets.PASSWORD }}
-        source: docker-compose.yml
-        target: /root/TelegramPosterApp/TelegramBackground/
+       source: TelegramPoster.Background/docker-compose.yml
+        target: /root/TelegramPosterApp/TelegramBackground
 
     # Deploy on the server
     - name: Deploy on Server
