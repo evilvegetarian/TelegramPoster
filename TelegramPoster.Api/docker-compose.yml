@@ -8,10 +8,3 @@ services:
          published: 10000
     volumes:
       - ./appsettings.json:/app/appsettings.json
-  background:
-    image: evilvegetarian/telegrambackground:##BuildNumber##
-    ports:
-       - target: 8081
-         published: 10001
-    volumes:
-      - ./appsettings.json:/app/appsettings.json

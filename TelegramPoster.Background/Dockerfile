@@ -9,23 +9,22 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["TelegramPoster.Api/TelegramPoster.Api.csproj", "TelegramPoster.Api/"]
+COPY ["TelegramPoster.Background/TelegramPoster.Background.csproj", "TelegramPoster.Background/"]
+COPY ["TelegramPoster.Persistence/TelegramPoster.Persistence.csproj", "TelegramPoster.Persistence/"]
 COPY ["TelegramPoster.Application/TelegramPoster.Application.csproj", "TelegramPoster.Application/"]
 COPY ["TelegramPoster.Auth/TelegramPoster.Auth.csproj", "TelegramPoster.Auth/"]
 COPY ["TelegramPoster.Domain/TelegramPoster.Domain.csproj", "TelegramPoster.Domain/"]
-COPY ["TelegramPoster.Persistence/TelegramPoster.Persistence.csproj", "TelegramPoster.Persistence/"]
-COPY ["Utility/Utility.csproj", "Utility/"]
-RUN dotnet restore "./TelegramPoster.Api/TelegramPoster.Api.csproj"
+RUN dotnet restore "./TelegramPoster.Background/TelegramPoster.Background.csproj"
 COPY . .
-WORKDIR "/src/TelegramPoster.Api"
-RUN dotnet build "./TelegramPoster.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/TelegramPoster.Background"
+RUN dotnet build "./TelegramPoster.Background.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./TelegramPoster.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./TelegramPoster.Background.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-COPY /TelegramPoster.Api/appsettings.json .
-ENTRYPOINT ["dotnet", "TelegramPoster.Api.dll"]
+COPY /TelegramPoster.Background/appsettings.json .
+ENTRYPOINT ["dotnet", "TelegramPoster.Background.dll"]

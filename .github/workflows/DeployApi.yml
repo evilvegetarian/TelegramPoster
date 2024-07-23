@@ -17,7 +17,7 @@ jobs:
       shell: pwsh
 
     - name: Replace file content
-      run: (Get-Content docker-compose.yml) -replace '##BuildNumber##', '${{ github.run_number }}' | Set-Content docker-compose.yml
+      run: (Get-Content TelegramPoster.Api/docker-compose.yml) -replace '##BuildNumber##', '${{ github.run_number }}' | Set-Content TelegramPoster.Api/docker-compose.yml
       shell: pwsh
           
     # Log in to Docker Hub before pushing the image
@@ -43,7 +43,7 @@ jobs:
         host: ${{ secrets.SERVER_IP }}
         username: ${{ secrets.SERVER_USER }}
         password: ${{ secrets.PASSWORD }}
-        source: docker-compose.yml
+        source: TelegramPoster.Api/docker-compose.yml
         target: /root/TelegramPosterApp/TelegramApi/
 
     # Deploy on the server
