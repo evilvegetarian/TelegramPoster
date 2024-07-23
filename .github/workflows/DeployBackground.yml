@@ -41,7 +41,7 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         password: ${{ secrets.PASSWORD }}
         source: /TelegramPoster.Background/docker-compose.yml
-        target: /root/TelegramPosterApp/TelegramBackground/docker-compose.yml
+        target: /root/TelegramPosterApp/TelegramBackground/
 
     # Deploy on the server
     - name: Deploy on Server
