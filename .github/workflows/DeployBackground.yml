@@ -11,6 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+
+    - name: Replace file content
+      run: (Get-Content TelegramPoster.Background/docker-compose.yml) -replace '##BuildNumber##', '${{ github.run_number }}' | Set-Content TelegramPoster.Background/docker-compose.yml
+      shell: pwsh
           
     # Log in to Docker Hub before pushing the image
     - name: Log in to Docker Hub
