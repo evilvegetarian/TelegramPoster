@@ -44,7 +44,7 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         password: ${{ secrets.PASSWORD }}
         source: docker-compose.yml
-        target: /root/TelegramPosterApp/TelegramApi
+        target: /root/TelegramPosterApp/TelegramApi/
 
     # Deploy on the server
     - name: Deploy on Server
@@ -54,7 +54,7 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         password: ${{ secrets.PASSWORD }}
         script: |
-          cd /root/TelegramPosterApp/TelegramApi
+          cd /root/TelegramPosterApp/TelegramApi/
           docker-compose down
           docker pull ${{ secrets.DOCKER_REP }}:${{ github.run_number }}
           docker-compose up -d 
