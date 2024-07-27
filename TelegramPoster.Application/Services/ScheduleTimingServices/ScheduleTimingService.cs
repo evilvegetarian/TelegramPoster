@@ -72,19 +72,25 @@ public class ScheduleTimingService : IScheduleTimingService
             .ToList();
     }
 
-    public async Task<ScheduleTimingResponseModel?> GetDayOfWeekTiming(Guid scheduleId)
+    public async Task<ScheduleTimingResponseModel> GetDayOfWeekTiming(Guid scheduleId)
     {
         var timing = await dayRepository.GetListWithTimeByScheduleIdAsync(scheduleId);
         timing.AssertFound();
-        return timing.GroupBy(x => x.ScheduleId)
-                      .Select(g => new ScheduleTimingResponseModel
-                      {
-                          DayOfWeekModels = g.Select(day => new ScheduleTimingDayOfWeekResponseModel
-                          {
-                              DayOfWeekPosting = day.DayOfWeek!.Value,
-                              TimePosting = day.TimePostings.Select(x => x.Time).ToList(),
-                          }).ToList()
 
-                      }).FirstOrDefault();
+        var groupedTiming = timing.GroupBy(x => x.ScheduleId)
+                                  .Select(g => new ScheduleTimingResponseModel
+                                  {
+                                      DayOfWeekModels = g.Select(day => new ScheduleTimingDayOfWeekResponseModel
+                                      {
+                                          DayOfWeekPosting = day.DayOfWeek!.Value,
+                                          TimePosting = day.TimePostings.Select(x => x.Time).ToList(),
+                                      }).ToList()
+
+                                  }).FirstOrDefault();
+
+        return groupedTiming ?? new ScheduleTimingResponseModel
+        {
+            DayOfWeekModels = new List<ScheduleTimingDayOfWeekResponseModel>()
+        };
     }
 }

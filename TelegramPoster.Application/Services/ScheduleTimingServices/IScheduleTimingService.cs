@@ -6,5 +6,5 @@ public interface IScheduleTimingService
 {
     Task CreateForDayOfWeek(ScheduleTimingDayOfWeekRequestForm createDayOfWeekSchedule);
     List<DayOfWeekResponseModel> GetAllDayOfWeek();
-    Task<ScheduleTimingResponseModel?> GetDayOfWeekTiming(Guid scheduleId);
+    Task<ScheduleTimingResponseModel> GetDayOfWeekTiming(Guid scheduleId);
 }
