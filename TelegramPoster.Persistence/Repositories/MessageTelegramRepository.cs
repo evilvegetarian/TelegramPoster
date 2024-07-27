@@ -56,7 +56,7 @@ public class MessageTelegramRepository(ISqlConnectionFactory connection) : IMess
                        WHERE "Id" = @Id
                        """;
         using var db = connection.Create();
-        await db.ExecuteAsync(sql, new { Status = status, Ids = id });
+        await db.ExecuteAsync(sql, new { Status = status, Id = id });
     }
 
     public async Task<List<MessageTelegram>> GetByScheduleIdAsync(Guid scheduleId, bool? isPosted = null)
@@ -107,12 +107,12 @@ public class MessageTelegramRepository(ISqlConnectionFactory connection) : IMess
     public async Task<List<MessageTelegram>> GetByStatusWithFileAndScheduleAndBotAsync(MessageStatus messageStatus)
     {
         var timeFrom = DateTime.Now.TimeOfDay;
-        var timeTo = DateTime.Now.TimeOfDay.Add(new TimeSpan(0, 0, 1, 0));
+        var timeTo = DateTime.Now.TimeOfDay.Add(new TimeSpan(0, 0, 1, 30));
 
         var sql = """
                  SELECT mt.*, ft.*, s.*, tb.*
                  FROM "MessageTelegram" mt
-                 INNER JOIN "FilesTelegram" ft ON ft."MessageTelegramId" = mt."Id"
+                 LEFT JOIN "FilesTelegram" ft ON ft."MessageTelegramId" = mt."Id"
                  LEFT JOIN "Schedule" s ON s."Id" = mt."ScheduleId"
                  LEFT JOIN "TelegramBot" tb ON tb."Id" = s."BotId"
                  WHERE mt."Status" = @Status

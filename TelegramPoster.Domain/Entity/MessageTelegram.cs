@@ -18,6 +18,6 @@ public class MessageTelegram
     public required bool IsTextMessage { get; init; }
     public required MessageStatus Status { get; init; }
 
-    public List<FilesTelegram>? FilesTelegrams { get; set; } = [];
+    public List<FilesTelegram> FilesTelegrams { get; set; } = [];
     public Schedule? Schedule { get; set; }
 }

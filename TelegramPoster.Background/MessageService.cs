@@ -33,12 +33,19 @@ public class MessageService
     {
         var telegramBot = new TelegramBotClient(cryptoAES.Decrypt(messageTelegram.Schedule!.TelegramBot!.ApiTelegram));
 
-        var messages = await telegramBot.SendMediaGroupAsync(messageTelegram.Schedule!.ChannelId, media: messageTelegram.GetFiles());
+        if (messageTelegram.FilesTelegrams.Any())
+        {
+            var media = messageTelegram.GetFiles();
+            if (media?.Any() == true)
+            {
+                await telegramBot.SendMediaGroupAsync(messageTelegram.Schedule!.ChannelId, media: media!);
+            }
+        }
+        else if (messageTelegram.TextMessage != null)
+        {
+            await telegramBot.SendTextMessageAsync(messageTelegram.Schedule!.ChannelId, messageTelegram.TextMessage);
+        }
 
-        var dd = messages == null
-                    ? await telegramBot.SendTextMessageAsync(messageTelegram.Schedule!.ChannelId, messageTelegram!.TextMessage)
-                : await telegramBot.EditMessageTextAsync(messageTelegram.Schedule!.ChannelId, messages.FirstOrDefault()!.MessageId, messageTelegram.TextMessage!);
-
-        await messageTelegramRepository.UpdateStatusAsync(messageTelegram.Id, MessageStatus.InHandle);
+        await messageTelegramRepository.UpdateStatusAsync(messageTelegram.Id, MessageStatus.Send);
     }
 }

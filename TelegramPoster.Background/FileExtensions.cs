@@ -6,21 +6,36 @@ namespace TelegramPoster.Background;
 
 public static class FileExtensions
 {
-    public static IEnumerable<IAlbumInputMedia> GetFiles(this MessageTelegram messageTelegram)
+    public static IEnumerable<IAlbumInputMedia?> GetFiles(this MessageTelegram messageTelegram)
     {
-        var medias = messageTelegram.FilesTelegrams.Select(file =>
-        {
-            if (file.Type == ContentTypes.Photo)
-            {
-                return new InputMediaPhoto(InputFile.FromFileId(file.TgFileId)) as IAlbumInputMedia;
-            }
-            else if (file.Type == ContentTypes.Video)
-            {
-                return new InputMediaVideo(InputFile.FromFileId(file.TgFileId)) as IAlbumInputMedia;
-            }
-            return null;
-        }).Where(media => media != null);
+        bool haveText = false;
 
-        return medias;
+        return messageTelegram.FilesTelegrams
+            .Select(file =>
+            {
+                IAlbumInputMedia media = file.Type switch
+                {
+                    ContentTypes.Photo => new InputMediaPhoto(InputFile.FromFileId(file.TgFileId)),
+                    ContentTypes.Video => new InputMediaVideo(InputFile.FromFileId(file.TgFileId)),
+                    _ => null
+                };
+
+                if (media != null && !haveText && messageTelegram.TextMessage != null)
+                {
+                    if (media is InputMediaPhoto photo)
+                    {
+                        photo.Caption = messageTelegram.TextMessage;
+                    }
+                    else if (media is InputMediaVideo video)
+                    {
+                        video.Caption = messageTelegram.TextMessage;
+                    }
+
+                    haveText = true;
+                }
+                return media;
+
+            })
+            .Where(media => media != null);
     }
 }
