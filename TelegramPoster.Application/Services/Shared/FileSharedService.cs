@@ -25,12 +25,12 @@ public static class FileSharedService
             switch (type)
             {
                 case ContentTypes.Video:
-                    message = await botClient.SendVideoAsync(chat.Id, inputFile);
+                    message = await botClient.SendVideoAsync(chat.Id, inputFile, disableNotification: true);
                     fileId = message.Video?.FileId;
                     break;
 
                 case ContentTypes.Photo:
-                    message = await botClient.SendPhotoAsync(chat.Id, inputFile);
+                    message = await botClient.SendPhotoAsync(chat.Id, inputFile, disableNotification: true);
                     fileId = message.Photo?
                         .OrderByDescending(x => x.FileSize)
                         .Select(x => x.FileId)
