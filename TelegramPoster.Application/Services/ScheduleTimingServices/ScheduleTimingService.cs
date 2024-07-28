@@ -1,4 +1,5 @@
-﻿using TelegramPoster.Application.Interfaces;
+﻿using System.Globalization;
+using TelegramPoster.Application.Interfaces;
 using TelegramPoster.Application.Interfaces.Repositories;
 using TelegramPoster.Application.Models.ScheduleTiming;
 using TelegramPoster.Application.Validator;
@@ -76,13 +77,13 @@ public class ScheduleTimingService : IScheduleTimingService
     {
         var timing = await dayRepository.GetListWithTimeByScheduleIdAsync(scheduleId);
         timing.AssertFound();
-
+        CultureInfo myCI = new CultureInfo("RU-ru");
         var groupedTiming = timing.GroupBy(x => x.ScheduleId)
                                   .Select(g => new ScheduleTimingResponseModel
                                   {
                                       DayOfWeekModels = g.Select(day => new ScheduleTimingDayOfWeekResponseModel
                                       {
-                                          DayOfWeekPosting = day.DayOfWeek!.Value,
+                                          DayOfWeekPosting = myCI.DateTimeFormat.GetDayName(day.DayOfWeek.Value),
                                           TimePosting = day.TimePostings.Select(x => x.Time).ToList(),
                                       }).ToList()
 

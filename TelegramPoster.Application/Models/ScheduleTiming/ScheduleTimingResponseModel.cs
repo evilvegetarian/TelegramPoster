@@ -11,7 +11,7 @@ public class ScheduleTimingResponseModel
 public class ScheduleTimingDayOfWeekResponseModel
 {
     [Required]
-    public required DayOfWeek DayOfWeekPosting { get; set; }
+    public required string DayOfWeekPosting { get; set; }
 
     [Required]
     public required List<TimeOnly> TimePosting { get; set; } = [];
