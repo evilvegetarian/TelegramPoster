@@ -20,7 +20,10 @@ public static class DependencyInjection
                 .AddPostgres()
                 .WithGlobalConnectionString(dataBase!.ConnectionString)
                 .ScanIn(typeof(DependencyInjection).Assembly).For.Migrations())
-            .AddLogging(lb => lb.AddConsole());
+            .AddLogging(lb =>
+            {
+                lb.AddConsole();
+            });
 
         SqlMapper.AddTypeHandler(new SqlTimeOnlyTypeHandler());
         SqlMapper.AddTypeHandler(new SqlDateOnlyTypeHandler());

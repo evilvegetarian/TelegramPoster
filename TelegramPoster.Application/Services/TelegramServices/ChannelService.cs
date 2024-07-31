@@ -52,7 +52,7 @@ public class ChannelService : IChannelService
         var userId = currentUserProvider.Current().UserId;
 
         var allBotUser = await telegramBotRepository.GetByUserIdAsync(userId);
-        var channels = await channelRepository.GetListByBotIdsAsync(allBotUser.Select(x => x.Id));
+        var channels = await channelRepository.GetListByBotIdsAsync(allBotUser.Select(x => x.Id).ToList());
 
         return channels.Select(channel =>
         {
