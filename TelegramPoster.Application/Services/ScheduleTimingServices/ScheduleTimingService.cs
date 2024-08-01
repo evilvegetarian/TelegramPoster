@@ -61,8 +61,8 @@ public class ScheduleTimingService : IScheduleTimingService
             }
         }
 
-        await dayRepository.AddListAsync(days);
-        await timePostingRepository.AddListAsync(timePostings);
+        await dayRepository.AddAsync(days);
+        await timePostingRepository.AddAsync(timePostings);
     }
 
     public List<DayOfWeekResponseModel> GetAllDayOfWeek()

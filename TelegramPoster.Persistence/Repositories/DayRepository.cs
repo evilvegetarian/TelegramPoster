@@ -4,7 +4,7 @@ using TelegramPoster.Domain.Entity;
 
 namespace TelegramPoster.Persistence.Repositories;
 
-public class DayRepository(ISqlConnectionFactory connection) : IDayRepository
+internal class DayRepository(ISqlConnectionFactory connection) : IDayRepository
 {
     public async Task AddAsync(Day day)
     {
@@ -16,7 +16,7 @@ public class DayRepository(ISqlConnectionFactory connection) : IDayRepository
         await db.ExecuteAsync(sql, day);
     }
 
-    public async Task AddListAsync(List<Day> days)
+    public async Task AddAsync(List<Day> days)
     {
         const string sql = """
                        INSERT INTO "Day" ("Id", "ScheduleId", "DayOfWeek", "DateDay")
@@ -81,7 +81,6 @@ public class DayRepository(ISqlConnectionFactory connection) : IDayRepository
             splitOn: "Id"
         );
 
-        var result = dayTimePostingsLookup.Values.ToList();
-        return result;
+        return dayTimePostingsLookup.Values.ToList();
     }
 }

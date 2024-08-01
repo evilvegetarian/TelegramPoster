@@ -57,7 +57,7 @@ public class BotChannelRepositoryTests(PersistenceTestFixture fixture) : IClassF
     }
 
     [Fact]
-    public async Task ReturnNullForBotChannel_WhenNoMatchingBotIdInDb()
+    public async Task GetBotChannelWhenNoMatchingBotIdInDb_ShouldReturnNull()
     {
         var botId = Guid.Parse("7da0eb8e-1b27-48ad-baf1-bd84c45870b5");
 

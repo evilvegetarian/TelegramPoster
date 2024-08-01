@@ -18,7 +18,7 @@ public class TimePostingRepository(ISqlConnectionFactory connection) : ITimePost
         await db.ExecuteAsync(sql, timePosting);
     }
 
-    public async Task AddListAsync(List<TimePosting> timePostings)
+    public async Task AddAsync(List<TimePosting> timePostings)
     {
         const string sql = """
                            INSERT INTO "TimePosting" ("Id", "DayId", "Time")
