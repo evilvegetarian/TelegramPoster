@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using TelegramPoster.Application.Models.TelegramBot;
 using TelegramPoster.Application.Services.TelegramServices;
 using TelegramPoster.Application.Validator.Channel;
+using TelegramPoster.Auth.Interface;
 
 namespace TelegramPoster.Api.Controllers;
 

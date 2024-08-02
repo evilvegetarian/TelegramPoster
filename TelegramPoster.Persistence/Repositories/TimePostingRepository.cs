@@ -6,8 +6,6 @@ namespace TelegramPoster.Persistence.Repositories;
 
 public class TimePostingRepository(ISqlConnectionFactory connection) : ITimePostingRepository
 {
-    private readonly ISqlConnectionFactory connection = connection;
-
     public async Task AddAsync(TimePosting timePosting)
     {
         const string sql = """

@@ -22,5 +22,5 @@ public class CurrentUserProvider(IHttpContextAccessor httpContextAccessor) : ICu
 
 public class UserProvider
 {
-    public Guid UserId { get; set; }
+    public Guid UserId { get; init; }
 }
