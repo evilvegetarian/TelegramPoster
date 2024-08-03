@@ -8,7 +8,8 @@ public class ErrorHandlingMiddleware(RequestDelegate next)
 {
     public async Task InvokeAsync(
         HttpContext context,
-        ProblemDetailsFactory problemDetailsFactory)
+        ProblemDetailsFactory problemDetailsFactory,
+        ILogger<ErrorHandlingMiddleware> logger)
     {
         try
         {
@@ -16,6 +17,11 @@ public class ErrorHandlingMiddleware(RequestDelegate next)
         }
         catch (Exception exception)
         {
+            logger.LogError(
+                 exception,
+                 "Error has happened with {RequestPath}, the message is {ErrorMessage}",
+                 context.Request.Path.Value, exception.Message);
+
             var problemDetails = exception switch
             {
                 BadRequestException badRequestException =>

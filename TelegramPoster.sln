@@ -19,11 +19,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramPoster.Background",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{ABE8CE6C-6863-42C0-A2AD-4FAA1D967414}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramPoster.E2E", "TelegramPoster.E2E\TelegramPoster.E2E.csproj", "{F1CDAF2E-E8CE-43B4-9436-308FBE038758}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramPoster.E2E", "TelegramPoster.E2E\TelegramPoster.E2E.csproj", "{F1CDAF2E-E8CE-43B4-9436-308FBE038758}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramPoster.Persistence.Tests", "TelegramPoster.Persistence.Tests\TelegramPoster.Persistence.Tests.csproj", "{E9632312-62A1-4CCC-B693-961A343B19AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramPoster.Persistence.Tests", "TelegramPoster.Persistence.Tests\TelegramPoster.Persistence.Tests.csproj", "{E9632312-62A1-4CCC-B693-961A343B19AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramPoster.Application.Tests", "TelegramPoster.Application.Tests\TelegramPoster.Application.Tests.csproj", "{08D706D8-C5C4-4032-A34D-4306F0C1A3C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramPoster.Application.Tests", "TelegramPoster.Application.Tests\TelegramPoster.Application.Tests.csproj", "{08D706D8-C5C4-4032-A34D-4306F0C1A3C6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedProject", "SharedProject", "{D1613316-1032-4749-B474-819AAFC509C1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OpenSearch", "OpenSearch", "{63F62ADC-0E2E-48D6-A01A-2CCD3216EFA2}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,6 +86,7 @@ Global
 		{F1CDAF2E-E8CE-43B4-9436-308FBE038758} = {ABE8CE6C-6863-42C0-A2AD-4FAA1D967414}
 		{E9632312-62A1-4CCC-B693-961A343B19AD} = {ABE8CE6C-6863-42C0-A2AD-4FAA1D967414}
 		{08D706D8-C5C4-4032-A34D-4306F0C1A3C6} = {ABE8CE6C-6863-42C0-A2AD-4FAA1D967414}
+		{63F62ADC-0E2E-48D6-A01A-2CCD3216EFA2} = {D1613316-1032-4749-B474-819AAFC509C1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9D0E981C-99B0-4717-8383-3DBECEB70C6E}
