@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using TelegramPoster.Api.Middlewares;
 using TelegramPoster.Application;
 using TelegramPoster.Auth;
 using TelegramPoster.Persistence;
@@ -46,8 +47,6 @@ public class Program
             });
         });
 
-
-
         builder.Services.AddHealthChecks()
             .AddUrlGroup(new Uri(cors.Front), name: "Front", tags: ["Front"]);
 
@@ -58,7 +57,7 @@ public class Program
 
         builder.Services.AddControllers(options =>
         {
-            options.Filters.Add<HttpResponseExceptionFilter>();
+            //options.Filters.Add<HttpResponseExceptionFilter>();
         });
 
         builder.Services.AddCors(options =>
@@ -71,9 +70,7 @@ public class Program
             });
         });
 
-        //ext
         builder.Services.AddApiAuthentication(builder.Configuration);
-
         builder.Services.AddPersistence(builder.Configuration);
         builder.Services.AddApplication();
         builder.Services.AddUtility();
@@ -90,7 +87,7 @@ public class Program
 
         app.UseSwagger();
         app.UseSwaggerUI();
-
+        app.UseMiddleware<ErrorHandlingMiddleware>();
         app.MapHealthChecks("/health");
         app.MapHealthChecks("/health-npsql", new HealthCheckOptions
         {
@@ -106,7 +103,6 @@ public class Program
             HttpOnly = HttpOnlyPolicy.Always,
             Secure = CookieSecurePolicy.Always
         });
-        //app.Services.SaveSwaggerJson();
         app.UseCors();
 
         app.UseAuthentication();
